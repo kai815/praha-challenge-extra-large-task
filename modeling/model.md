@@ -1,3 +1,4 @@
+```uml
 @startuml
 object 参加者 {
   id
@@ -81,3 +82,4 @@ object 参加者課題 {
 参加者課題 "0...n" --> 参加者
 
 @enduml
+```
