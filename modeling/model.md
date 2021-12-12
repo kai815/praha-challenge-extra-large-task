@@ -1,10 +1,10 @@
 ```uml
 @startuml
-object 参加者 {
+object 参加者(User) {
   id
-  名前
-  メールアドレス
-  在籍ステータス
+  名前(name)
+  メールアドレス(email)
+  在籍ステータス(status)
 }
 
 note right of (参加者)
