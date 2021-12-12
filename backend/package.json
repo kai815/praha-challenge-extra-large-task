@@ -24,7 +24,8 @@
     "migrate:test": "dotenv -e .test.env -- prisma migrate reset --force --preview-feature",
     "migrate:prd": "prisma migrate deploy --preview-feature",
     "test:unit": "dotenv -e .test.env -- jest",
-    "test:integration": "yarn migrate:test && dotenv -e .test.env -- jest -c ./jest.integration.config.js --runInBand"
+    "test:integration": "yarn migrate:test && dotenv -e .test.env -- jest -c ./jest.integration.config.js --runInBand",
+    "studio:dev":"dotenv -e .local.env -- prisma studio"
   },
   "dependencies": {
     "@nestjs/common": "^7.5.1",
