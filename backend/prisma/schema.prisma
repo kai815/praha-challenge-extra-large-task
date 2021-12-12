@@ -9,7 +9,20 @@ generator client {
 }
 
 model SomeData {
-  id        String    @id
+  id       String  @id
   required Boolean
   number   Int     @db.SmallInt
+}
+
+model User {
+  id     String @id
+  name   String
+  email  String @unique
+  status Status @default(Inmembership)
+}
+
+enum Status {
+  Inmembership
+  Inactive
+  Withdrawn
 }
