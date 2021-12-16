@@ -1,18 +1,27 @@
+import { Status } from './zaiseki-status'
 export class User {
   private id: string
   private name: string
   private email: string
-  private number: number
+  private status?: Status
   public constructor(props: {
     id: string
     name: string
     email: string
-    number: number
+    status: Status
   }) {
-    const { id, name, email, number } = props
+    const { id, name, email, status } = props
     this.id = id
     this.name = name
     this.email = email
-    this.number = number
+    this.status = status ?? 'Inmembership'
+  }
+  public getAllProperties() {
+    return {
+      id: this.id,
+      name: this.name,
+      email: this.email,
+      status: this.status,
+    }
   }
 }
