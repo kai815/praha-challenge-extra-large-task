@@ -3,7 +3,7 @@ import { Body, Controller, Post } from '@nestjs/common'
 import { PostUserRequest } from './request/post-user-request'
 import { PrismaClient } from '@prisma/client'
 import { UserRepository } from 'src/infra/db/repository/user-repository'
-import { PostUserUseCase } from 'src/app/user-usecase'
+import { PostUserUseCase } from 'src/app/post-user-usecase'
 
 @Controller({
   path: '/user',
