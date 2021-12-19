@@ -4,7 +4,7 @@ import { createRandomIdString } from 'src/util/random'
 import { prisma } from '@testUtil/prisma'
 import { UserRepository } from '../repository/user-repository'
 
-describe('user.integration.ts', () => {
+describe('user-repository.integration.ts', () => {
   const userRepo = new UserRepository(prisma)
   beforeAll(async () => {
     await prisma.user.deleteMany({})
