@@ -21,4 +21,20 @@ export class UserRepository implements IUserRepository {
     const savedUserEntity = new User({ ...savedUserModel })
     return savedUserEntity
   }
+  public async update(userEntity: User): Promise<User> {
+    const { id, name, email, status } = userEntity.getAllProperties()
+
+    const updatedUserModel = await this.prismaClient.user.update({
+      data: {
+        name,
+        email,
+        status,
+      },
+      where: {
+        id,
+      },
+    })
+    const updatedUserEntity = new User({ ...updatedUserModel })
+    return updatedUserEntity
+  }
 }
