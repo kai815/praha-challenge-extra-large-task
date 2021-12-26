@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, Param } from '@nestjs/common'
+import { Body, Controller, Get, Post, Put, Param, Delete } from '@nestjs/common'
 import { ApiResponse } from '@nestjs/swagger'
 import { PostUserRequest } from './request/post-user-request'
 import { PrismaClient } from '@prisma/client'
@@ -9,6 +9,7 @@ import { UserRepository } from 'src/infra/db/repository/user-repository'
 import { PostUserUseCase } from 'src/app/post-user-usecase'
 import { UpdateUserUseCase } from 'src/app/update-user-usecase'
 import { UpdateUserRequest } from './request/update-user-request'
+import { DeleteUserUseCase } from 'src/app/delete-user-usecase'
 
 @Controller({
   path: '/user',
@@ -49,6 +50,15 @@ export class UserController {
       name: updateUserDto.name,
       email: updateUserDto.email,
       status: updateUserDto.status,
+    })
+  }
+  @Delete(':id')
+  async deleteUser(@Param('id') id: string): Promise<void> {
+    const prisma = new PrismaClient()
+    const repo = new UserRepository(prisma)
+    const usecase = new DeleteUserUseCase(repo)
+    await usecase.do({
+      id,
     })
   }
 }
