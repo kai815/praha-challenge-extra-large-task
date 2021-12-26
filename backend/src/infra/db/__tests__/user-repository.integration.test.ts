@@ -61,4 +61,22 @@ describe('user-repository.integration.ts', () => {
       expect(allUsers[0]).toEqual(userExpected)
     })
   })
+  describe('delete', () => {
+    afterEach(async () => {
+      await prisma.user.deleteMany({})
+    })
+    it('[正常系]userを削除できる', async () => {
+      const creatingUser = {
+        id: createRandomIdString(),
+        name: '山田太郎',
+        email: 'test@test.com',
+        //TODOここasつけなきゃなのか深堀したい
+        status: 'Inmembership' as Status,
+      }
+      await userRepo.save(new User(creatingUser))
+      await userRepo.delete(creatingUser.id)
+      const allUsers = await prisma.user.findMany({})
+      expect(allUsers).toHaveLength(0)
+    })
+  })
 })
