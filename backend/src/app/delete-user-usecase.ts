@@ -1,5 +1,3 @@
-import { User } from 'src/domain/entity/User'
-import { createRandomIdString } from 'src/util/random'
 import { IUserRepository } from './repository-interface/user-repository-interface'
 
 export class DeleteUserUseCase {
