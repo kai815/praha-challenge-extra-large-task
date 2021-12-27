@@ -21,5 +21,4 @@ export class UserDTO {
 
 export interface IUsersQS {
   getAll(): Promise<UserDTO[]>
-  getById(id: string): Promise<UserDTO>
 }

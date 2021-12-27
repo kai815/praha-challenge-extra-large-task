@@ -16,20 +16,4 @@ export class UsersQS implements IUsersQS {
         }),
     )
   }
-
-  public async getById(id: string): Promise<UserDTO> {
-    const gettedUserById = await this.prismaClient.user.findUnique({
-      where: { id },
-    })
-    if (!gettedUserById) {
-      throw new Error('ユーザは見つかりませんでした。')
-    }
-    const user = new UserDTO({
-      id: gettedUserById.id ?? '',
-      name: gettedUserById.name ?? '',
-      email: gettedUserById.email ?? '',
-      status: gettedUserById.status ?? '',
-    })
-    return user
-  }
 }

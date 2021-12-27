@@ -46,4 +46,16 @@ export class UserRepository implements IUserRepository {
     const deletedUserEntity = new User({ ...deletedUserModel })
     return deletedUserEntity
   }
+  public async find(id: string): Promise<User> {
+    const findedUserModel = await this.prismaClient.user.findFirst({
+      where: {
+        id,
+      },
+    })
+    if (!findedUserModel) {
+      throw new Error('ユーザは見つかりませんでした。')
+    }
+    const findedUserEntity = new User({ ...findedUserModel })
+    return findedUserEntity
+  }
 }
