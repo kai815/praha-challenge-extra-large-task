@@ -43,8 +43,7 @@ export class UserController {
   ): Promise<void> {
     const prisma = new PrismaClient()
     const repo = new UserRepository(prisma)
-    const qs = new UsersQS(prisma)
-    const usecase = new UpdateUserUseCase(repo, qs)
+    const usecase = new UpdateUserUseCase(repo)
     await usecase.do({
       id,
       name: updateUserDto.name,
