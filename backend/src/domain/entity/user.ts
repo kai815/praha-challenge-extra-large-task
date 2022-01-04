@@ -1,14 +1,14 @@
 import { Status } from './zaiseki-status'
 export class User {
   private id: string
-  private name: string
-  private email: string
-  private status?: Status
+  public readonly name: string
+  public readonly email: string
+  public readonly status: Status
   public constructor(props: {
     id: string
     name: string
     email: string
-    status: Status
+    status?: Status
   }) {
     const { id, name, email, status } = props
     this.id = id
