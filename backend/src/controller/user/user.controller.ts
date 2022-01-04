@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, Param, Delete } from '@nestjs/common'
+import { Body, Controller, Get, Post, Param, Delete } from '@nestjs/common'
 import { ApiResponse } from '@nestjs/swagger'
 import { PostUserRequest } from './request/post-user-request'
 import { PrismaClient } from '@prisma/client'
@@ -36,7 +36,7 @@ export class UserController {
       email: postUserDto.email,
     })
   }
-  @Put(':id')
+  @Post(':id')
   async updateUser(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserRequest,
