@@ -21,6 +21,6 @@ export class UpdateUserUseCase {
       status: params.status ?? beforeUser.status,
     }
     const userEntity = new User(updateUserParams)
-    await this.userRepo.update(userEntity)
+    await this.userRepo.save(userEntity)
   }
 }

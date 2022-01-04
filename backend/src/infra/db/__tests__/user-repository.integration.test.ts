@@ -30,11 +30,6 @@ describe('user-repository.integration.ts', () => {
       expect(allUsers).toHaveLength(1)
       expect(allUsers[0]).toEqual(userExpected)
     })
-  })
-  describe('update', () => {
-    afterEach(async () => {
-      await prisma.user.deleteMany({})
-    })
     it('[正常系]userを更新できる', async () => {
       const creatingUser = {
         id: createRandomIdString(),
@@ -55,7 +50,7 @@ describe('user-repository.integration.ts', () => {
         //TODOここasつけなきゃなのか深堀したい
         status: 'Inactive' as Status,
       }
-      await userRepo.update(new User(userExpected))
+      await userRepo.save(new User(userExpected))
       const allUsers = await prisma.user.findMany({})
       expect(allUsers).toHaveLength(1)
       expect(allUsers[0]).toEqual(userExpected)

@@ -10,9 +10,17 @@ export class UserRepository implements IUserRepository {
   public async save(userEntity: User): Promise<User> {
     const { id, name, email, status } = userEntity.getAllProperties()
 
-    const savedUserModel = await this.prismaClient.user.create({
-      data: {
+    const savedUserModel = await this.prismaClient.user.upsert({
+      where: {
         id,
+      },
+      create: {
+        id,
+        name,
+        email,
+        status,
+      },
+      update: {
         name,
         email,
         status,
@@ -20,22 +28,6 @@ export class UserRepository implements IUserRepository {
     })
     const savedUserEntity = new User({ ...savedUserModel })
     return savedUserEntity
-  }
-  public async update(userEntity: User): Promise<User> {
-    const { id, name, email, status } = userEntity.getAllProperties()
-
-    const updatedUserModel = await this.prismaClient.user.update({
-      data: {
-        name,
-        email,
-        status,
-      },
-      where: {
-        id,
-      },
-    })
-    const updatedUserEntity = new User({ ...updatedUserModel })
-    return updatedUserEntity
   }
   public async delete(id: string): Promise<User> {
     const deletedUserModel = await this.prismaClient.user.delete({
