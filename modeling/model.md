@@ -1,6 +1,7 @@
 ```uml
 @startuml
-object 参加者(User) {
+object 参加者 {
+  User(モデル名)
   id
   名前(name)
   メールアドレス(email)
@@ -57,10 +58,11 @@ object チームメンバー {
 
 
 object 課題 {
+  Task(モデル名)
   id
-  タイトル
-  学ばないと何が起こるか
-  説明
+  タイトル(title)
+  学ばないと何が起こるか(reason)
+  説明(discription)
 }
 
 note right of (課題)
@@ -73,10 +75,11 @@ note right of (課題)
 end note
 
 object 参加者課題 {
+  UserTask(モデル名)
   id
-  課題ID
-  参加者ID
-  進捗ステータス
+  課題ID(taskId)
+  参加者ID(userId)
+  進捗ステータス(status)
 }
 
 課題 "1" *-- "0...n" 参加者課題
