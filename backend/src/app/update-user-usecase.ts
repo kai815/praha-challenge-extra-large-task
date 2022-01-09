@@ -1,6 +1,6 @@
-import { User } from 'src/domain/entity/User'
 import { Status } from 'src/domain/entity/zaiseki-status'
 import { IUserRepository } from './repository-interface/user-repository-interface'
+import { UserFactory } from 'src/domain/factory/user.factory'
 
 export class UpdateUserUseCase {
   private readonly userRepo: IUserRepository
@@ -13,14 +13,8 @@ export class UpdateUserUseCase {
     email?: string
     status?: Status
   }) {
-    const beforeUser = await this.userRepo.find(params.id)
-    const updateUserParams = {
-      id: params.id,
-      name: params.name ?? beforeUser.name,
-      email: params.email ?? beforeUser.email,
-      status: params.status ?? beforeUser.status,
-    }
-    const userEntity = new User(updateUserParams)
+    const userFac = new UserFactory(this.userRepo)
+    const userEntity = await userFac.create(params)
     await this.userRepo.save(userEntity)
   }
 }
