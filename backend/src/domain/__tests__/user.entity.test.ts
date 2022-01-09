@@ -16,4 +16,18 @@ describe('user.entity.test', () => {
       expect(user.getAllProperties()).toEqual(userExpected)
     })
   })
+  describe('validateEmail', () => {
+    it('[異常系]Emailとして正しくないものはエラーを吐く', () => {
+      const invalidUser = {
+        id: createRandomIdString(),
+        name: '山田太郎',
+        email: 'testtest.com',
+        //TODOここasつけなきゃなのか深堀したい
+        status: 'Inmembership' as Status,
+      }
+      expect((): void => {
+        new User(invalidUser)
+      }).toThrow('Invalid Email')
+    })
+  })
 })

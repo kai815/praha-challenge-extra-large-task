@@ -11,6 +11,9 @@ export class User {
     status?: Status
   }) {
     const { id, name, email, status } = props
+    if (!this.validateEmail(email)) {
+      throw new Error('Invalid Email')
+    }
     this.id = id
     this.name = name
     this.email = email
@@ -23,5 +26,9 @@ export class User {
       email: this.email,
       status: this.status,
     }
+  }
+  private validateEmail(email: string) {
+    const regexp = /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/
+    return regexp.test(email)
   }
 }
