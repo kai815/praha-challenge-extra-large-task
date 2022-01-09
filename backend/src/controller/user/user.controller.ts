@@ -6,6 +6,7 @@ import { GetUsersResponse } from './response/get-users-response'
 import { UsersQS } from 'src/infra/db/query-service/users-qs'
 import { GetUsersUseCase } from '../../app/get-users-usecase'
 import { UserRepository } from 'src/infra/db/repository/user-repository'
+import { UserFactory } from 'src/domain/factory/user.factory'
 import { PostUserUseCase } from 'src/app/post-user-usecase'
 import { UpdateUserUseCase } from 'src/app/update-user-usecase'
 import { UpdateUserRequest } from './request/update-user-request'
@@ -30,7 +31,8 @@ export class UserController {
   async postUser(@Body() postUserDto: PostUserRequest): Promise<void> {
     const prisma = new PrismaClient()
     const repo = new UserRepository(prisma)
-    const usecase = new PostUserUseCase(repo)
+    const factory = new UserFactory(repo)
+    const usecase = new PostUserUseCase(repo, factory)
     await usecase.do({
       name: postUserDto.name,
       email: postUserDto.email,
@@ -43,7 +45,8 @@ export class UserController {
   ): Promise<void> {
     const prisma = new PrismaClient()
     const repo = new UserRepository(prisma)
-    const usecase = new UpdateUserUseCase(repo)
+    const factory = new UserFactory(repo)
+    const usecase = new UpdateUserUseCase(repo, factory)
     await usecase.do({
       id,
       name: updateUserDto.name,
