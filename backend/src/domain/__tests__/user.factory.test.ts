@@ -7,6 +7,7 @@ import { UserRepository } from 'src/infra/db/repository/user-repository'
 jest.mock('src/infra/db/repository/user-repository') // パスを指定
 const UserRepoMock = UserRepository as jest.Mock
 
+//UserRepositoryのmock
 UserRepoMock.mockImplementationOnce(() => {
   return {
     find: async (id: string) => {
