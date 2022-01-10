@@ -36,9 +36,16 @@ model Task {
 }
 
 model UserTask {
-  id     String @id
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @unique
-  task   Task   @relation(fields: [taskId], references: [id])
-  taskId String @unique
+  id     String     @id
+  status TaskStatus @default(NotStarted)
+  user   User       @relation(fields: [userId], references: [id])
+  userId String     @unique
+  task   Task       @relation(fields: [taskId], references: [id])
+  taskId String     @unique
+}
+
+enum TaskStatus {
+  NotStarted
+  InReview
+  Completed
 }
