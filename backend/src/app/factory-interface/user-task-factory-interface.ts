@@ -3,8 +3,6 @@ import { Status } from 'src/domain/entity/sintyoku-status'
 
 type InsertUserTaskParams = {
   kind: 'Insert'
-  id?: string
-  status: Status
   userId: string
   taskId: string
 }
