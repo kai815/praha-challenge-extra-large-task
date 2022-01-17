@@ -7,7 +7,7 @@ export class UserTask {
   public readonly taskId: string
   public constructor(props: {
     id: string
-    status: Status
+    status?: Status
     userId: string
     taskId: string
   }) {
