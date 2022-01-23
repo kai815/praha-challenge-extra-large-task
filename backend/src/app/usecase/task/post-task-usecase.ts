@@ -32,7 +32,7 @@ export class PostTaskUseCase {
     await this.taskRepo.save(taskEntity)
     //全てのユーザーのユーザータスクの作成
     const allUsers = await this.userQS.getAll()
-    allUsers.map(async (user) => {
+    await allUsers.map(async (user) => {
       const userTask = await this.userTaskFac.create({
         kind: 'Insert',
         userId: user.id,
