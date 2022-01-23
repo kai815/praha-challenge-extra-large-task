@@ -11,6 +11,9 @@ import { PostUserUseCase } from 'src/app/post-user-usecase'
 import { UpdateUserUseCase } from 'src/app/update-user-usecase'
 import { UpdateUserRequest } from './request/update-user-request'
 import { DeleteUserUseCase } from 'src/app/delete-user-usecase'
+import { UserTaskRepository } from 'src/infra/db/repository/user-task-repository'
+import { UserTaskFactory } from 'src/domain/factory/user-task.factory'
+import { TaskQS } from 'src/infra/db/query-service/task-qs'
 
 @Controller({
   path: '/user',
@@ -32,7 +35,16 @@ export class UserController {
     const prisma = new PrismaClient()
     const repo = new UserRepository(prisma)
     const factory = new UserFactory(repo)
-    const usecase = new PostUserUseCase(repo, factory)
+    const taskQS = new TaskQS(prisma)
+    const userTaskRepo = new UserTaskRepository(prisma)
+    const userTaskFac = new UserTaskFactory(userTaskRepo)
+    const usecase = new PostUserUseCase(
+      repo,
+      factory,
+      taskQS,
+      userTaskRepo,
+      userTaskFac,
+    )
     await usecase.do({
       name: postUserDto.name,
       email: postUserDto.email,
