@@ -11,6 +11,9 @@ import { PostTaskUseCase } from 'src/app/usecase/task/post-task-usecase'
 import { UpdateTaskUseCase } from 'src/app/usecase/task/update-task-usecase'
 import { UpdateTaskRequest } from './request/update-task-request'
 import { DeleteTaskUseCase } from 'src/app/usecase/task/delete-task-usecase'
+import { UserTaskRepository } from 'src/infra/db/repository/user-task-repository'
+import { UserTaskFactory } from 'src/domain/factory/user-task.factory'
+import { UsersQS } from 'src/infra/db/query-service/users-qs'
 
 @Controller({
   path: '/task',
@@ -32,7 +35,16 @@ export class TaskController {
     const prisma = new PrismaClient()
     const repo = new TaskRepository(prisma)
     const factory = new TaskFactory(repo)
-    const usecase = new PostTaskUseCase(repo, factory)
+    const usersQS = new UsersQS(prisma)
+    const userTaskRepo = new UserTaskRepository(prisma)
+    const userTaskFac = new UserTaskFactory(userTaskRepo)
+    const usecase = new PostTaskUseCase(
+      repo,
+      factory,
+      usersQS,
+      userTaskRepo,
+      userTaskFac,
+    )
     await usecase.do({
       title: postTaskDto.title,
       reason: postTaskDto.reason,
