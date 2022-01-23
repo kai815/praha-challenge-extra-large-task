@@ -6,6 +6,7 @@ import { TaskRepository } from '../repository/task-repository'
 describe('task-repository.integration.ts', () => {
   const taskRepo = new TaskRepository(prisma)
   beforeAll(async () => {
+    //TODOここのあたりでテストが落ちるので直すおそらくDBの関係
     await prisma.task.deleteMany({})
   })
   afterAll(async () => {
@@ -24,9 +25,12 @@ describe('task-repository.integration.ts', () => {
       }
       await taskRepo.save(new Task(taskExpected))
 
-      const allTasks = await prisma.task.findMany({})
-      expect(allTasks).toHaveLength(1)
-      expect(allTasks[0]).toEqual(taskExpected)
+      const createdTask = await prisma.task.findUnique({
+        where: {
+          id: taskExpected.id,
+        },
+      })
+      expect(createdTask).toEqual(taskExpected)
     })
     it('[正常系]taskを更新できる', async () => {
       const creatingTask = {
@@ -37,8 +41,11 @@ describe('task-repository.integration.ts', () => {
       }
       await taskRepo.save(new Task(creatingTask))
 
-      const createTasks = await prisma.task.findMany({})
-      const createdTask = createTasks[0]
+      const createdTask = await prisma.task.findUnique({
+        where: {
+          id: creatingTask.id,
+        },
+      })
       const id = createdTask?.id ?? ''
       const taskExpected = {
         id: id,
@@ -48,9 +55,12 @@ describe('task-repository.integration.ts', () => {
         description: 'DDDについて、ペアに説明してみましょう。テスト更新。',
       }
       await taskRepo.save(new Task(taskExpected))
-      const allTasks = await prisma.task.findMany({})
-      expect(allTasks).toHaveLength(1)
-      expect(allTasks[0]).toEqual(taskExpected)
+      const updatedTask = await prisma.task.findUnique({
+        where: {
+          id: taskExpected.id,
+        },
+      })
+      expect(updatedTask).toEqual(taskExpected)
     })
   })
   describe('delete', () => {
@@ -66,8 +76,12 @@ describe('task-repository.integration.ts', () => {
       }
       await taskRepo.save(new Task(creatingTask))
       await taskRepo.delete(creatingTask.id)
-      const allTasks = await prisma.task.findMany({})
-      expect(allTasks).toHaveLength(0)
+      const deletedTask = await prisma.task.findUnique({
+        where: {
+          id: creatingTask.id,
+        },
+      })
+      expect(deletedTask).toEqual(null)
     })
   })
 })

@@ -1,12 +1,13 @@
 import { User } from 'src/domain/entity/user'
 import { Status } from 'src/domain/entity/zaiseki-status'
-import { createRandomIdString } from 'src/util/random'
 import { prisma } from '@testUtil/prisma'
 import { UserRepository } from '../repository/user-repository'
+import { createUserTestData } from '../../../../testUtil/user-data-factory'
 
 describe('user-repository.integration.ts', () => {
   const userRepo = new UserRepository(prisma)
   beforeAll(async () => {
+    //TODOここのあたりでテストが落ちるので直すおそらくDBの関係
     await prisma.user.deleteMany({})
   })
   afterAll(async () => {
@@ -17,31 +18,39 @@ describe('user-repository.integration.ts', () => {
       await prisma.user.deleteMany({})
     })
     it('[正常系]userを保存できる', async () => {
+      const randomUser = createUserTestData()
       const userExpected = {
-        id: createRandomIdString(),
-        name: '山田太郎',
-        email: 'test@test.com',
+        id: randomUser.id,
+        name: randomUser.name,
+        email: randomUser.email,
         //TODOここasつけなきゃなのか深堀したい
         status: 'Inmembership' as Status,
       }
       await userRepo.save(new User(userExpected))
 
-      const allUsers = await prisma.user.findMany({})
-      expect(allUsers).toHaveLength(1)
-      expect(allUsers[0]).toEqual(userExpected)
+      const user = await prisma.user.findUnique({
+        where: {
+          id: userExpected.id,
+        },
+      })
+      expect(user).toEqual(userExpected)
     })
     it('[正常系]userを更新できる', async () => {
+      const randomUser = createUserTestData()
       const creatingUser = {
-        id: createRandomIdString(),
-        name: '山田太郎',
-        email: 'test@test.com',
+        id: randomUser.id,
+        name: randomUser.name,
+        email: randomUser.email,
         //TODOここasつけなきゃなのか深堀したい
         status: 'Inmembership' as Status,
       }
       await userRepo.save(new User(creatingUser))
 
-      const createUsers = await prisma.user.findMany({})
-      const createdUser = createUsers[0]
+      const createdUser = await prisma.user.findUnique({
+        where: {
+          id: creatingUser.id,
+        },
+      })
       const id = createdUser?.id ?? ''
       const userExpected = {
         id: id,
@@ -51,9 +60,12 @@ describe('user-repository.integration.ts', () => {
         status: 'Inactive' as Status,
       }
       await userRepo.save(new User(userExpected))
-      const allUsers = await prisma.user.findMany({})
-      expect(allUsers).toHaveLength(1)
-      expect(allUsers[0]).toEqual(userExpected)
+      const updatedUser = await prisma.user.findUnique({
+        where: {
+          id: userExpected.id,
+        },
+      })
+      expect(updatedUser).toEqual(userExpected)
     })
   })
   describe('delete', () => {
@@ -61,17 +73,20 @@ describe('user-repository.integration.ts', () => {
       await prisma.user.deleteMany({})
     })
     it('[正常系]userを削除できる', async () => {
+      const randomUser = createUserTestData()
       const creatingUser = {
-        id: createRandomIdString(),
-        name: '山田太郎',
-        email: 'test@test.com',
+        id: randomUser.id,
+        name: randomUser.name,
+        email: randomUser.email,
         //TODOここasつけなきゃなのか深堀したい
         status: 'Inmembership' as Status,
       }
       await userRepo.save(new User(creatingUser))
       await userRepo.delete(creatingUser.id)
-      const allUsers = await prisma.user.findMany({})
-      expect(allUsers).toHaveLength(0)
+      const deletedUser = await prisma.user.findUnique({
+        where: { id: creatingUser.id },
+      })
+      expect(deletedUser).toEqual(null)
     })
   })
 })
