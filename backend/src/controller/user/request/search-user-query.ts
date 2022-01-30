@@ -5,6 +5,9 @@ import { Status } from 'src/domain/entity/sintyoku-status'
 
 export class SearchUserQuery {
   @ApiProperty()
+  readonly page: number | undefined
+
+  @ApiProperty()
   readonly taskIds: string[] | string | undefined
 
   @ApiProperty()

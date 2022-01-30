@@ -2,6 +2,7 @@ import { IUsersQS } from './query-service-interface/users-qs'
 import { Status } from 'src/domain/entity/sintyoku-status'
 
 type SearchUserUseCaseParams = {
+  page?: number
   taskIds?: string[] | string
   status?: Status
 }
@@ -15,11 +16,13 @@ export class SearchUserUseCase {
       let searchParams
       if (typeof params.taskIds === 'string') {
         searchParams = {
+          page: params.page,
           taskIds: [params.taskIds],
           status: params.status,
         }
       } else {
         searchParams = {
+          page: params.page,
           taskIds: params.taskIds,
           status: params.status,
         }

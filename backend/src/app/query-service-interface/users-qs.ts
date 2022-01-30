@@ -21,6 +21,7 @@ export class UserDTO {
 }
 
 export type SearchUserParams = {
+  page?: number
   taskIds?: string[]
   status?: SintyokuStatus
 }
