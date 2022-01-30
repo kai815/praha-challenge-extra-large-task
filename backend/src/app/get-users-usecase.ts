@@ -1,5 +1,4 @@
 import { IUsersQS } from './query-service-interface/users-qs'
-
 export class GetUsersUseCase {
   private readonly userQS: IUsersQS
   public constructor(userQS: IUsersQS) {
