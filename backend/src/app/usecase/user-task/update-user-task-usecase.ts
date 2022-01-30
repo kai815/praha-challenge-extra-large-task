@@ -2,7 +2,7 @@ import { IUserTaskRepository } from 'src/app/repository-interface/user-task-repo
 import { IUserTaskFactory } from 'src/app/factory-interface/user-task-factory-interface'
 import { Status } from 'src/domain/entity/sintyoku-status'
 
-export class UpdateTaskUseCase {
+export class UpdateUserTaskUseCase {
   private readonly userTaskRepo: IUserTaskRepository
   private readonly userTaskFac: IUserTaskFactory
   public constructor(
