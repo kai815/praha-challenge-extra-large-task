@@ -13,6 +13,7 @@ import { PrismaClient } from '@prisma/client'
 import { GetUsersResponse } from './response/get-users-response'
 import { UsersQS } from 'src/infra/db/query-service/users-qs'
 import { GetUsersUseCase } from '../../app/get-users-usecase'
+import { SearchUserUseCase } from '../../app/search-user-usecase'
 import { UserRepository } from 'src/infra/db/repository/user-repository'
 import { UserFactory } from 'src/domain/factory/user.factory'
 import { PostUserUseCase } from 'src/app/post-user-usecase'
@@ -31,13 +32,22 @@ export class UserController {
   // memo: @ApiResponseを定義しておかないとSwaggerに出力されない
   @Get()
   @ApiResponse({ status: 200, type: GetUsersResponse })
-  async getUsers(
-    @Query() searchUserQuery: SearchUserQuery,
-  ): Promise<GetUsersResponse> {
-    console.log('searchUserQuery', searchUserQuery)
+  async getUsers(): Promise<GetUsersResponse> {
     const prisma = new PrismaClient()
     const qs = new UsersQS(prisma)
     const usecase = new GetUsersUseCase(qs)
+    const result = await usecase.do()
+    const response = new GetUsersResponse({ users: result })
+    return response
+  }
+  @Get('/search')
+  @ApiResponse({ status: 200, type: GetUsersResponse })
+  async searchUser(
+    @Query() searchUserQuery: SearchUserQuery,
+  ): Promise<GetUsersResponse> {
+    const prisma = new PrismaClient()
+    const qs = new UsersQS(prisma)
+    const usecase = new SearchUserUseCase(qs)
     const result = await usecase.do(searchUserQuery)
     const response = new GetUsersResponse({ users: result })
     return response
