@@ -1,4 +1,5 @@
 import { Status } from 'src/domain/entity/zaiseki-status'
+import { Status as SintyokuStatus } from 'src/domain/entity/sintyoku-status'
 
 export class UserDTO {
   public readonly id: string
@@ -19,7 +20,11 @@ export class UserDTO {
   }
 }
 
+export type SearchUserParams = {
+  taskIds?: string[]
+  status?: SintyokuStatus
+}
 export interface IUsersQS {
   getAll(): Promise<UserDTO[]>
-  search(): Promise<UserDTO[]>
+  search(params: SearchUserParams): Promise<UserDTO[]>
 }

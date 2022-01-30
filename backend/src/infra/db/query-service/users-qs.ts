@@ -1,5 +1,9 @@
-import { PrismaClient } from '@prisma/client'
-import { UserDTO, IUsersQS } from 'src/app/query-service-interface/users-qs'
+import { PrismaClient, TaskStatus } from '@prisma/client'
+import {
+  UserDTO,
+  IUsersQS,
+  SearchUserParams,
+} from 'src/app/query-service-interface/users-qs'
 
 export class UsersQS implements IUsersQS {
   private prismaClient: PrismaClient
@@ -16,13 +20,27 @@ export class UsersQS implements IUsersQS {
         }),
     )
   }
-  public async search(): Promise<UserDTO[]> {
-    const seachedUsers = await this.prismaClient.user.findMany({
-      include: {
-        UserTask: true,
-      },
-    })
-    console.log('seachedUsers', seachedUsers)
+  public async search(params: SearchUserParams): Promise<UserDTO[]> {
+    let seachedUsers
+    if (
+      typeof params.taskIds !== undefined &&
+      typeof params.status !== undefined
+    ) {
+      const searchCondtions = params.taskIds?.map((taskId) => {
+        return {
+          UserTask: {
+            every: { taskId: taskId, status: params.status },
+          },
+        }
+      })
+      seachedUsers = await this.prismaClient.user.findMany({
+        where: {
+          OR: searchCondtions,
+        },
+      })
+    } else {
+      seachedUsers = await this.prismaClient.user.findMany({})
+    }
     return seachedUsers.map((user) => {
       return new UserDTO({
         id: user.id,
