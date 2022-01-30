@@ -33,6 +33,7 @@ export class UsersQS implements IUsersQS {
           },
         }
       })
+      //https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#relation-filters
       seachedUsers = await this.prismaClient.user.findMany({
         where: {
           OR: searchCondtions,
