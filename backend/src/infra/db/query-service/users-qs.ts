@@ -16,4 +16,20 @@ export class UsersQS implements IUsersQS {
         }),
     )
   }
+  public async search(): Promise<UserDTO[]> {
+    const seachedUsers = await this.prismaClient.user.findMany({
+      include: {
+        UserTask: true,
+      },
+    })
+    console.log('seachedUsers', seachedUsers)
+    return seachedUsers.map((user) => {
+      return new UserDTO({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        status: user.status,
+      })
+    })
+  }
 }

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Param, Delete } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common'
 import { ApiResponse } from '@nestjs/swagger'
 import { PostUserRequest } from './request/post-user-request'
 import { PrismaClient } from '@prisma/client'
@@ -10,6 +18,7 @@ import { UserFactory } from 'src/domain/factory/user.factory'
 import { PostUserUseCase } from 'src/app/post-user-usecase'
 import { UpdateUserUseCase } from 'src/app/update-user-usecase'
 import { UpdateUserRequest } from './request/update-user-request'
+import { SearchUserQuery } from './request/search-user-query'
 import { DeleteUserUseCase } from 'src/app/delete-user-usecase'
 import { UserTaskRepository } from 'src/infra/db/repository/user-task-repository'
 import { UserTaskFactory } from 'src/domain/factory/user-task.factory'
@@ -22,11 +31,14 @@ export class UserController {
   // memo: @ApiResponseを定義しておかないとSwaggerに出力されない
   @Get()
   @ApiResponse({ status: 200, type: GetUsersResponse })
-  async getUsers(): Promise<GetUsersResponse> {
+  async getUsers(
+    @Query() searchUserQuery: SearchUserQuery,
+  ): Promise<GetUsersResponse> {
+    console.log('searchUserQuery', searchUserQuery)
     const prisma = new PrismaClient()
     const qs = new UsersQS(prisma)
     const usecase = new GetUsersUseCase(qs)
-    const result = await usecase.do()
+    const result = await usecase.do(searchUserQuery)
     const response = new GetUsersResponse({ users: result })
     return response
   }
