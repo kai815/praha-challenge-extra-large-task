@@ -7,7 +7,7 @@ import { createUserTestData } from '../../../../testUtil/user-data-factory'
 describe('user-repository.integration.ts', () => {
   const userRepo = new UserRepository(prisma)
   beforeAll(async () => {
-    //TODOここのあたりでテストが落ちるので直すおそらくDBの関係
+    await prisma.userTask.deleteMany({})
     await prisma.user.deleteMany({})
   })
   afterAll(async () => {
@@ -15,6 +15,7 @@ describe('user-repository.integration.ts', () => {
   })
   describe('save', () => {
     afterEach(async () => {
+      await prisma.userTask.deleteMany({})
       await prisma.user.deleteMany({})
     })
     it('[正常系]userを保存できる', async () => {
@@ -70,6 +71,7 @@ describe('user-repository.integration.ts', () => {
   })
   describe('delete', () => {
     afterEach(async () => {
+      await prisma.userTask.deleteMany({})
       await prisma.user.deleteMany({})
     })
     it('[正常系]userを削除できる', async () => {

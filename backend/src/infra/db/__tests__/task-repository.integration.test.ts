@@ -6,7 +6,7 @@ import { TaskRepository } from '../repository/task-repository'
 describe('task-repository.integration.ts', () => {
   const taskRepo = new TaskRepository(prisma)
   beforeAll(async () => {
-    //TODOここのあたりでテストが落ちるので直すおそらくDBの関係
+    await prisma.userTask.deleteMany({})
     await prisma.task.deleteMany({})
   })
   afterAll(async () => {
@@ -14,6 +14,7 @@ describe('task-repository.integration.ts', () => {
   })
   describe('save', () => {
     afterEach(async () => {
+      await prisma.userTask.deleteMany({})
       await prisma.task.deleteMany({})
     })
     it('[正常系]taskを保存できる', async () => {
@@ -65,6 +66,7 @@ describe('task-repository.integration.ts', () => {
   })
   describe('delete', () => {
     afterEach(async () => {
+      await prisma.userTask.deleteMany({})
       await prisma.task.deleteMany({})
     })
     it('[正常系]taskを削除できる', async () => {
