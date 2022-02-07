@@ -22,6 +22,7 @@ export class UserTaskController {
     await usecase.do({
       id,
       status: updateUserTaskDto.status,
+      userId: updateUserTaskDto.userId,
     })
   }
 }

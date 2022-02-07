@@ -71,7 +71,8 @@ export class TaskController {
   async deleteUser(@Param('id') id: string): Promise<void> {
     const prisma = new PrismaClient()
     const repo = new TaskRepository(prisma)
-    const usecase = new DeleteTaskUseCase(repo)
+    const userTaskRepo = new UserTaskRepository(prisma)
+    const usecase = new DeleteTaskUseCase(repo, userTaskRepo)
     await usecase.do({
       id,
     })

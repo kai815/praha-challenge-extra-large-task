@@ -25,4 +25,7 @@ export class UserTask {
       taskId: this.taskId,
     }
   }
+  public isMathedUserId(userId: string) {
+    return userId === this.getAllProperties().userId
+  }
 }

@@ -15,17 +15,18 @@ describe('user-task-repository.integration.ts', () => {
   const userRepo = new UserRepository(prisma)
   const taskRepo = new TaskRepository(prisma)
   beforeAll(async () => {
-    //TODOここのあたりでテストが落ちるので直すおそらくDBの関係
+    await prisma.userTask.deleteMany({})
     await prisma.user.deleteMany({})
     await prisma.task.deleteMany({})
-    await prisma.userTask.deleteMany({})
   })
   afterAll(async () => {
     await prisma.$disconnect()
   })
   describe('save', () => {
     afterEach(async () => {
+      await prisma.userTask.deleteMany({})
       await prisma.user.deleteMany({})
+      await prisma.task.deleteMany({})
     })
     it('[正常系]userTaskを保存できる', async () => {
       const randomUser = createUserTestData()

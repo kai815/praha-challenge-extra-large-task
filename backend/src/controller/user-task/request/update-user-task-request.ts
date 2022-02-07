@@ -6,8 +6,8 @@ import { Status } from 'src/domain/entity/sintyoku-status'
 
 export class UpdateUserTaskRequest {
   @ApiProperty()
-  // @IsNotEmpty()
-  readonly userId: string | undefined
+  @IsNotEmpty()
+  readonly userId!: string
 
   @ApiProperty()
   @IsNotEmpty()

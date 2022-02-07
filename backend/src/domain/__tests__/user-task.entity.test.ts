@@ -15,4 +15,26 @@ describe('user-task.entity.test', () => {
       expect(userTask.getAllProperties()).toEqual(userTaskExpected)
     })
   })
+  describe('isMathedUserId', () => {
+    it('[正常系]作成したインスタンスとユーザidが一致する場合trueを返す', () => {
+      const userTaskExpected = {
+        id: createRandomIdString(),
+        status: 'NotStarted' as Status,
+        userId: createRandomIdString(),
+        taskId: createRandomIdString(),
+      }
+      const userTask = new UserTask(userTaskExpected)
+      expect(userTask.isMathedUserId(userTaskExpected.userId)).toEqual(true)
+    })
+    it('[正常系]作成したインスタンスとユーザidが一致しない場合falseを返す', () => {
+      const userTaskExpected = {
+        id: createRandomIdString(),
+        status: 'NotStarted' as Status,
+        userId: createRandomIdString(),
+        taskId: createRandomIdString(),
+      }
+      const userTask = new UserTask(userTaskExpected)
+      expect(userTask.isMathedUserId(userTaskExpected.taskId)).toEqual(false)
+    })
+  })
 })

@@ -12,12 +12,15 @@ export class UpdateUserTaskUseCase {
     this.userTaskRepo = userTaskRepo
     this.userTaskFac = userTaskFac
   }
-  public async do(params: { id: string; status: Status }) {
+  public async do(params: { id: string; status: Status; userId: string }) {
     const userTaskEntity = await this.userTaskFac.create({
       kind: 'Update',
       id: params.id,
       status: params.status,
     })
+    if (!userTaskEntity.isMathedUserId(params.userId)) {
+      throw new Error('ユーザーIdが一致しません')
+    }
     await this.userTaskRepo.save(userTaskEntity)
   }
 }

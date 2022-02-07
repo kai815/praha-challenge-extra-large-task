@@ -44,4 +44,26 @@ export class UserTaskRepository implements IUserTaskRepository {
     const findedUserTaskEntity = new UserTask({ ...findedUserTaskModel })
     return findedUserTaskEntity
   }
+  public async deleteBytaskId(taskId: string): Promise<void> {
+    const deletedUserTaskModel = await this.prismaClient.userTask.deleteMany({
+      where: {
+        taskId,
+      },
+    })
+    if (!deletedUserTaskModel) {
+      throw new Error('ユーザータスクは見つかりませんでした。')
+    }
+    //deletedUserTaskModel { count: 1 }
+  }
+  public async deleteByUserId(userId: string): Promise<void> {
+    const deletedUserTaskModel = await this.prismaClient.userTask.deleteMany({
+      where: {
+        userId,
+      },
+    })
+    if (!deletedUserTaskModel) {
+      throw new Error('ユーザータスクは見つかりませんでした。')
+    }
+    //deletedUserTaskModel { count: 1 }
+  }
 }
