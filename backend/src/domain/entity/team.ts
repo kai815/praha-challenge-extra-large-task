@@ -6,6 +6,9 @@ export class Team {
   public readonly pairs: Pair[]
   public constructor(props: { id: string; name: string; pairs: Pair[] }) {
     const { id, name, pairs } = props
+    if (!this.valdateName(name).valid) {
+      throw new Error(this.valdateName(name).errorMessage)
+    }
     this.id = id
     this.name = name
     this.pairs = pairs
@@ -16,6 +19,21 @@ export class Team {
       name: this.name,
       pairs: this.pairs,
     }
+  }
+  private valdateName(name: string) {
+    const regexp = /^[0-9]+$/
+    const result = { valid: true, errorMessage: '' }
+    if (!regexp.test(name)) {
+      result.valid = false
+      result.errorMessage = '半角数字しかteamの名前には使用できません。'
+      return result
+    }
+    if (name.length > 3) {
+      result.valid = false
+      result.errorMessage = '4文字以上の文字はpairの名前にできません。'
+      return result
+    }
+    return result
   }
 }
 
