@@ -55,6 +55,7 @@ model Pair {
   id         String       @id
   name       String
   PairMember PairMember[]
+  TeamPair   TeamPair[]
 }
 
 model PairMember {
@@ -66,6 +67,15 @@ model PairMember {
 }
 
 model Team {
-  id   String @id
-  name String
+  id       String     @id
+  name     String
+  TeamPair TeamPair[]
+}
+
+model TeamPair {
+  id     String @id
+  team   Team   @relation(fields: [teamId], references: [id])
+  teamId String @unique
+  pair   Pair   @relation(fields: [pairId], references: [id])
+  pairId String @unique
 }
