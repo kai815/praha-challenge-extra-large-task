@@ -64,3 +64,8 @@ model PairMember {
   pair   Pair   @relation(fields: [pairId], references: [id])
   pairId String @unique
 }
+
+model Team {
+  id   String @id
+  name String
+}
