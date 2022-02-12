@@ -25,6 +25,9 @@ class Pair {
   public readonly members: User[]
   public constructor(props: { id: string; name: string; members: User[] }) {
     const { id, name, members } = props
+    if (!this.valdateName(name).valid) {
+      throw new Error(this.valdateName(name).errorMessage)
+    }
     this.id = id
     this.name = name
     this.members = members
@@ -38,16 +41,17 @@ class Pair {
   }
   private valdateName(name: string) {
     const regexp = /^[a-zA-Z]+$/
-    let result: boolean | { errorMessage: string }
+    const result = { valid: true, errorMessage: '' }
     if (!regexp.test(name)) {
-      result = { errorMessage: '半角英字しかpairの名前には使用できません。' }
+      result.valid = false
+      result.errorMessage = '半角英字しかpairの名前には使用できません。'
       return result
     }
     if (name.length > 1) {
-      result = { errorMessage: '2文字以上の文字はpairの名前にできません。' }
+      result.valid = false
+      result.errorMessage = '2文字以上の文字はpairの名前にできません。'
       return result
     }
-    result = true
     return result
   }
 }
