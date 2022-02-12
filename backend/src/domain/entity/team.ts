@@ -36,4 +36,18 @@ class Pair {
       members: this.members,
     }
   }
+  private valdateName(name: string) {
+    const regexp = /^[a-zA-Z]+$/
+    let result: boolean | { errorMessage: string }
+    if (!regexp.test(name)) {
+      result = { errorMessage: '半角英字しかpairの名前には使用できません。' }
+      return result
+    }
+    if (name.length > 1) {
+      result = { errorMessage: '2文字以上の文字はpairの名前にできません。' }
+      return result
+    }
+    result = true
+    return result
+  }
 }
