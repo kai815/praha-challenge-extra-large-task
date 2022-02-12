@@ -49,3 +49,8 @@ enum TaskStatus {
   InReview
   Completed
 }
+
+model Pair {
+  id   String @id
+  name String
+}
