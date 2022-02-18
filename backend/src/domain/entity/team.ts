@@ -41,14 +41,19 @@ class Pair {
   private id: string
   public readonly name: string
   public readonly members: User[]
+  public readonly membersNumber: number
   public constructor(props: { id: string; name: string; members: User[] }) {
     const { id, name, members } = props
     if (!this.valdateName(name).valid) {
       throw new Error(this.valdateName(name).errorMessage)
     }
+    if (!this.valdateMemberNumber(members).valid) {
+      throw new Error(this.valdateMemberNumber(members).errorMessage)
+    }
     this.id = id
     this.name = name
     this.members = members
+    this.membersNumber = members.length
   }
   public getAllProperties() {
     return {
@@ -68,6 +73,20 @@ class Pair {
     if (name.length > 1) {
       result.valid = false
       result.errorMessage = '2文字以上の文字はpairの名前にできません。'
+      return result
+    }
+    return result
+  }
+  private valdateMemberNumber(members: User[]) {
+    const result = { valid: true, errorMessage: '' }
+    if (members.length > 3) {
+      result.valid = false
+      result.errorMessage = '3名より多いペアは存在できません。'
+      return result
+    }
+    if (members.length < 2) {
+      result.valid = false
+      result.errorMessage = '2名より少ないペアは存在できません。'
       return result
     }
     return result
