@@ -42,7 +42,7 @@ export class Team {
     const result = { valid: true, errorMessage: '' }
     const amount = pairs.reduce(
       (previousValue, currentValue) =>
-        previousValue + currentValue.membersCount,
+        previousValue + currentValue.getAllProperties().membersCount,
       0,
     )
     if (amount < 3) {
