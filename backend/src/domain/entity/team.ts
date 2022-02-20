@@ -30,7 +30,7 @@ export class Team {
     }
     if (name.length > 3) {
       result.valid = false
-      result.errorMessage = '4文字以上の文字はpairの名前にできません。'
+      result.errorMessage = '4文字以上の文字はteamの名前にできません。'
       return result
     }
     return result
