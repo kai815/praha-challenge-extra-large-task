@@ -41,19 +41,19 @@ class Pair {
   private id: string
   public readonly name: string
   public readonly members: User[]
-  public readonly membersNumber: number
+  public readonly membersCount: number
   public constructor(props: { id: string; name: string; members: User[] }) {
     const { id, name, members } = props
     if (!this.valdateName(name).valid) {
       throw new Error(this.valdateName(name).errorMessage)
     }
-    if (!this.valdateMemberNumber(members).valid) {
-      throw new Error(this.valdateMemberNumber(members).errorMessage)
+    if (!this.valdateMembersCount(members).valid) {
+      throw new Error(this.valdateMembersCount(members).errorMessage)
     }
     this.id = id
     this.name = name
     this.members = members
-    this.membersNumber = members.length
+    this.membersCount = members.length
   }
   public getAllProperties() {
     return {
@@ -77,7 +77,7 @@ class Pair {
     }
     return result
   }
-  private valdateMemberNumber(members: User[]) {
+  private valdateMembersCount(members: User[]) {
     const result = { valid: true, errorMessage: '' }
     if (members.length > 3) {
       result.valid = false
