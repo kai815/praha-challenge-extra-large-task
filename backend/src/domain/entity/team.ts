@@ -9,6 +9,9 @@ export class Team {
     if (!this.valdateName(name).valid) {
       throw new Error(this.valdateName(name).errorMessage)
     }
+    if (!this.validateMenbersCount(pairs).valid) {
+      throw new Error(this.validateMenbersCount(pairs).errorMessage)
+    }
     this.id = id
     this.name = name
     this.pairs = pairs
@@ -32,6 +35,19 @@ export class Team {
       result.valid = false
       result.errorMessage = '4文字以上の文字はteamの名前にできません。'
       return result
+    }
+    return result
+  }
+  private validateMenbersCount(pairs: Pair[]) {
+    const result = { valid: true, errorMessage: '' }
+    const amount = pairs.reduce(
+      (previousValue, currentValue) =>
+        previousValue + currentValue.membersCount,
+      0,
+    )
+    if (amount < 3) {
+      result.valid = false
+      result.errorMessage = '3名以下のteamは存在できません。'
     }
     return result
   }
@@ -60,6 +76,7 @@ class Pair {
       id: this.id,
       name: this.name,
       members: this.members,
+      membersCount: this.membersCount,
     }
   }
   private valdateName(name: string) {
