@@ -117,3 +117,5 @@ class Pair {
     return result
   }
 }
+
+//Memberクラスかく

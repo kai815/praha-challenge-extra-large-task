@@ -9,49 +9,49 @@ export class TeamRepository implements ITeamRepository {
   }
   public async save(teamEntity: Team): Promise<Team> {
     const { id, name, pairs } = teamEntity.getAllProperties()
+    //ネストしたcreateなどは出来そうだが、updateは出来ないので、1つずつのテーブルで行う
     // https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#nested-writes
+    //teamテーブルに対するupsert
     this.prismaClient.team.upsert({
       where: { id },
       create: {
         id,
         name,
-        TeamPair: {
-          create: pairs.map((pair) => {
-            return {
-              //idをちゃんとする
-              id: '',
-              teamId: id,
-              pairId: pair.getAllProperties().id,
-              pair: {
-                create: {
-                  id: pair.getAllProperties().id,
-                  name: pair.getAllProperties().name,
-                },
-              },
-            }
-          }),
-        },
       },
       update: {
         name,
-        //TODOupdateの条件考える
-        TeamPair: {
-          create: pairs.map((pair) => {
-            return {
-              //idをちゃんとする
-              id: '',
-              teamId: id,
-              pairId: pair.getAllProperties().id,
-              pair: {
-                update: {
-                  id: pair.getAllProperties().id,
-                  name: pair.getAllProperties().name,
-                },
-              },
-            }
-          }),
-        },
       },
+    })
+
+    //teamPairテーブルとpairテーブル、 pairMemberテーブルに対するupsert
+    pairs.map(async (pair) => {
+      await this.prismaClient.teamPair.upsert({
+        where: {
+          id: pair.getAllProperties().teamPairId,
+        },
+        create: {
+          id: pair.getAllProperties().teamPairId,
+          teamId: id,
+          pairId: pair.getAllProperties().id,
+        },
+        update: {
+          teamId: id,
+          pairId: pair.getAllProperties().id,
+        },
+      })
+      await this.prismaClient.pair.upsert({
+        where: {
+          id: pair.getAllProperties().id,
+        },
+        create: {
+          id: pair.getAllProperties().id,
+          name: pair.getAllProperties().name,
+        },
+        update: {
+          name: pair.getAllProperties().name,
+        },
+      })
+      //TODO pairMemberテーブルの更新
     })
   }
 }
