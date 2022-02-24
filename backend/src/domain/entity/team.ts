@@ -58,8 +58,14 @@ class Pair {
   public readonly name: string
   public readonly members: User[]
   public readonly membersCount: number
-  public constructor(props: { id: string; name: string; members: User[] }) {
-    const { id, name, members } = props
+  private teamPairId: string
+  public constructor(props: {
+    id: string
+    name: string
+    members: User[]
+    teamPairId: string
+  }) {
+    const { id, name, members, teamPairId } = props
     if (!this.valdateName(name).valid) {
       throw new Error(this.valdateName(name).errorMessage)
     }
@@ -70,6 +76,7 @@ class Pair {
     this.name = name
     this.members = members
     this.membersCount = members.length
+    this.teamPairId = teamPairId
   }
   public getAllProperties() {
     return {
@@ -77,6 +84,7 @@ class Pair {
       name: this.name,
       members: this.members,
       membersCount: this.membersCount,
+      teamPairId: this.teamPairId,
     }
   }
   private valdateName(name: string) {
