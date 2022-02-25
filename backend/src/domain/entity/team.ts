@@ -1,4 +1,5 @@
 import { User } from './user'
+import { Status } from './zaiseki-status'
 
 export class Team {
   private id: string
@@ -56,13 +57,13 @@ export class Team {
 class Pair {
   private id: string
   public readonly name: string
-  public readonly members: User[]
+  public readonly members: Member[]
   public readonly membersCount: number
   private teamPairId: string
   public constructor(props: {
     id: string
     name: string
-    members: User[]
+    members: Member[]
     teamPairId: string
   }) {
     const { id, name, members, teamPairId } = props
@@ -102,7 +103,7 @@ class Pair {
     }
     return result
   }
-  private valdateMembersCount(members: User[]) {
+  private valdateMembersCount(members: Member[]) {
     const result = { valid: true, errorMessage: '' }
     if (members.length > 3) {
       result.valid = false
@@ -118,4 +119,26 @@ class Pair {
   }
 }
 
-//Memberクラスかく
+class Member extends User {
+  private pairMemberId: string
+  constructor(props: {
+    id: string
+    name: string
+    email: string
+    status?: Status
+    pairMemberId: string
+  }) {
+    const { id, name, email, status, pairMemberId } = props
+    super({ id, name, email, status })
+    this.pairMemberId = pairMemberId
+  }
+  getAllProperties() {
+    return {
+      id: this.id,
+      name: this.name,
+      email: this.email,
+      status: this.status,
+      pairMemberId: this.pairMemberId,
+    }
+  }
+}

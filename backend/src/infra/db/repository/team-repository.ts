@@ -12,6 +12,7 @@ export class TeamRepository implements ITeamRepository {
     //ネストしたcreateなどは出来そうだが、updateは出来ないので、1つずつのテーブルで行う
     // https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#nested-writes
     //teamテーブルに対するupsert
+
     this.prismaClient.team.upsert({
       where: { id },
       create: {
