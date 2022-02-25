@@ -52,7 +52,23 @@ export class TeamRepository implements ITeamRepository {
           name: pair.getAllProperties().name,
         },
       })
-      //TODO pairMemberテーブルの更新
+      //pairMemberテーブルの更新
+      pair.members.map(async (member) => {
+        await this.prismaClient.pairMember.upsert({
+          where: {
+            id: member.getAllProperties().pairMemberId,
+          },
+          create: {
+            id: member.getAllProperties().pairMemberId,
+            pairId: pair.getAllProperties().id,
+            userId: member.getAllProperties().id,
+          },
+          update: {
+            pairId: pair.getAllProperties().id,
+            userId: member.getAllProperties().id,
+          },
+        })
+      })
     })
   }
 }
