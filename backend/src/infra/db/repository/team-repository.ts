@@ -13,7 +13,7 @@ export class TeamRepository implements ITeamRepository {
     // https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#nested-writes
     //teamテーブルに対するupsert
 
-    this.prismaClient.team.upsert({
+    const savedTeam = await this.prismaClient.team.upsert({
       where: { id },
       create: {
         id,
@@ -25,8 +25,8 @@ export class TeamRepository implements ITeamRepository {
     })
 
     //teamPairテーブルとpairテーブル、 pairMemberテーブルに対するupsert
-    pairs.map(async (pair) => {
-      await this.prismaClient.teamPair.upsert({
+    const savedPairList = pairs.map(async (pair) => {
+      const savedTeamPair = await this.prismaClient.teamPair.upsert({
         where: {
           id: pair.getAllProperties().teamPairId,
         },
@@ -40,7 +40,7 @@ export class TeamRepository implements ITeamRepository {
           pairId: pair.getAllProperties().id,
         },
       })
-      await this.prismaClient.pair.upsert({
+      const savedPair = await this.prismaClient.pair.upsert({
         where: {
           id: pair.getAllProperties().id,
         },
@@ -53,8 +53,8 @@ export class TeamRepository implements ITeamRepository {
         },
       })
       //pairMemberテーブルの更新
-      pair.members.map(async (member) => {
-        await this.prismaClient.pairMember.upsert({
+      const savedMamberList = pair.members.map(async (member) => {
+        const savedMamber = await this.prismaClient.pairMember.upsert({
           where: {
             id: member.getAllProperties().pairMemberId,
           },
@@ -68,7 +68,9 @@ export class TeamRepository implements ITeamRepository {
             userId: member.getAllProperties().id,
           },
         })
+        return savedMamber
       })
+      return { savedTeamPair, savedPair, savedMamberList }
     })
   }
 }
