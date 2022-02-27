@@ -146,7 +146,6 @@ describe('task.entity.test', () => {
   })
   describe('[team]validateMenbersCount', () => {
     it('[異常系]teamのメンバーが3名未満の時はエラーを吐く', () => {
-      //テストのためのインスタンスの生成が長い気がする
       const member1Pair1 = new Member(normalMember1Pair1)
       const member2Pair1 = new Member(normalMember2Pair1)
       const pair1 = new Pair({
@@ -159,6 +158,38 @@ describe('task.entity.test', () => {
           pairs: [pair1],
         })
       }).toThrow('3名未満のteamは存在できません。')
+    })
+  })
+  describe('[pair]valdateName', () => {
+    it('[異常系]pairの名前に半角英字以外が含まれる場合エラーを吐く', () => {
+      const abnormalPair1 = {
+        id: createRandomIdString(),
+        name: '1',
+        teamPairId: createRandomIdString(),
+      }
+      const member1Pair1 = new Member(normalMember1Pair1)
+      const member2Pair1 = new Member(normalMember2Pair1)
+      expect((): void => {
+        new Pair({
+          ...abnormalPair1,
+          members: [member1Pair1, member2Pair1],
+        })
+      }).toThrow('半角英字しかpairの名前には使用できません。')
+    })
+    it('[異常系]pairの名前が2文字以上の場合はエラーを吐く', () => {
+      const abnormalPair1 = {
+        id: createRandomIdString(),
+        name: 'aa',
+        teamPairId: createRandomIdString(),
+      }
+      const member1Pair1 = new Member(normalMember1Pair1)
+      const member2Pair1 = new Member(normalMember2Pair1)
+      expect((): void => {
+        new Pair({
+          ...abnormalPair1,
+          members: [member1Pair1, member2Pair1],
+        })
+      }).toThrow('2文字以上の文字はpairの名前にできません。')
     })
   })
 })
