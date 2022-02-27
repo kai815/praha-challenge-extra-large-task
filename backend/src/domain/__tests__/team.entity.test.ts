@@ -192,4 +192,18 @@ describe('task.entity.test', () => {
       }).toThrow('2文字以上の文字はpairの名前にできません。')
     })
   })
+  describe('[pair]valdateMembersCount', () => {
+    it('[異常系]pairのメンバーが3名よりも多い場合エラーを吐く', () => {
+      const member1Pair1 = new Member(normalMember1Pair1)
+      const member2Pair1 = new Member(normalMember2Pair1)
+      const member3Pair1 = new Member(normalMember1Pair2)
+      const member4Pair1 = new Member(normalMember2Pair2)
+      expect((): void => {
+        new Pair({
+          ...normalPair1,
+          members: [member1Pair1, member2Pair1, member3Pair1, member4Pair1],
+        })
+      }).toThrow('3名より多いペアは存在できません。')
+    })
+  })
 })
