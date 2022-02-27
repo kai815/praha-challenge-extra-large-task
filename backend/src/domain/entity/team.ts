@@ -54,7 +54,7 @@ export class Team {
   }
 }
 
-class Pair {
+export class Pair {
   private id: string
   public readonly name: string
   public readonly members: Member[]
@@ -119,7 +119,7 @@ class Pair {
   }
 }
 
-class Member extends User {
+export class Member extends User {
   private pairMemberId: string
   constructor(props: {
     id: string
