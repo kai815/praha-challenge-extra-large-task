@@ -73,4 +73,9 @@ export class TeamRepository implements ITeamRepository {
       return { savedTeamPair, savedPair, savedMamberList }
     })
   }
+
+  public async findByUserId(userId: string): Promise<Team> {
+    //prismaの使い方がわからん
+    this.prismaClient.team.findFirst()
+  }
 }
