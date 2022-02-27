@@ -48,7 +48,7 @@ export class Team {
     )
     if (amount < 3) {
       result.valid = false
-      result.errorMessage = '3名以下のteamは存在できません。'
+      result.errorMessage = '3名未満のteamは存在できません。'
     }
     return result
   }
