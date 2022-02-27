@@ -1,6 +1,6 @@
 import { Status } from './zaiseki-status'
 export class User {
-  private id: string
+  protected id: string
   public readonly name: string
   public readonly email: string
   public readonly status: Status

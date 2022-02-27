@@ -14,11 +14,12 @@ model SomeData {
 }
 
 model User {
-  id       String     @id
-  name     String
-  email    String     @unique
-  status   Status     @default(Inmembership)
-  UserTask UserTask[]
+  id         String       @id
+  name       String
+  email      String       @unique
+  status     Status       @default(Inmembership)
+  UserTask   UserTask[]
+  PairMember PairMember[]
 }
 
 enum Status {
@@ -48,4 +49,33 @@ enum TaskStatus {
   NotStarted
   InReview
   Completed
+}
+
+model Pair {
+  id         String       @id
+  name       String
+  PairMember PairMember[]
+  TeamPair   TeamPair[]
+}
+
+model PairMember {
+  id     String @id
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+  pair   Pair   @relation(fields: [pairId], references: [id])
+  pairId String @unique
+}
+
+model Team {
+  id       String     @id
+  name     String
+  TeamPair TeamPair[]
+}
+
+model TeamPair {
+  id     String @id
+  team   Team   @relation(fields: [teamId], references: [id])
+  teamId String @unique
+  pair   Pair   @relation(fields: [pairId], references: [id])
+  pairId String @unique
 }
