@@ -43,7 +43,7 @@ describe('task.entity.test', () => {
     name: '1',
   }
   describe('getAllProperties', () => {
-    it('[正常系]作成したインスタンスのプロパティが全て取れる', () => {
+    it('[正常系]team,pair,memberの作成したインスタンスのプロパティが全て取れる', () => {
       //テストのためのインスタンスの生成が長い気がする
       const member1Pair1 = new Member(normalMember1Pair1)
       const member2Pair1 = new Member(normalMember2Pair1)
@@ -61,9 +61,11 @@ describe('task.entity.test', () => {
         ...normalTeam,
         pairs: [pair1, pair2],
       })
+      //team
       expect(team.getAllProperties().id).toEqual(normalTeam.id)
       expect(team.getAllProperties().name).toEqual(normalTeam.name)
       expect(team.getAllProperties().pairs).toEqual([pair1, pair2])
+      //pair
       expect(pair1.getAllProperties().id).toEqual(normalPair1.id)
       expect(pair1.getAllProperties().name).toEqual(normalPair1.name)
       expect(pair1.getAllProperties().teamPairId).toEqual(
@@ -74,6 +76,7 @@ describe('task.entity.test', () => {
         member2Pair1,
       ])
       expect(pair1.getAllProperties().membersCount).toEqual(2)
+      //member
       expect(member1Pair1.getAllProperties().id).toEqual(normalMember1Pair1.id)
       expect(member1Pair1.getAllProperties().name).toEqual(
         normalMember1Pair1.name,
