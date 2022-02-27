@@ -42,7 +42,7 @@ describe('task.entity.test', () => {
     id: createRandomIdString(),
     name: '1',
   }
-  describe('getAllProperties', () => {
+  describe('[team,pair,member]getAllProperties', () => {
     it('[正常系]team,pair,memberの作成したインスタンスのプロパティが全て取れる', () => {
       //テストのためのインスタンスの生成が長い気がする
       const member1Pair1 = new Member(normalMember1Pair1)
@@ -90,6 +90,33 @@ describe('task.entity.test', () => {
       expect(member1Pair1.getAllProperties().pairMemberId).toEqual(
         normalMember1Pair1.pairMemberId,
       )
+    })
+  })
+  describe('[team]valdateName', () => {
+    it('[異常系]teamの名前に半角数字以外が含まれる時にはエラーを吐く', () => {
+      //テストのためのインスタンスの生成が長い気がする
+      const abnormalTeam = {
+        id: createRandomIdString(),
+        name: 'aaa',
+      }
+      const member1Pair1 = new Member(normalMember1Pair1)
+      const member2Pair1 = new Member(normalMember2Pair1)
+      const member1Pair2 = new Member(normalMember1Pair2)
+      const member2Pair2 = new Member(normalMember2Pair2)
+      const pair1 = new Pair({
+        ...normalPair1,
+        members: [member1Pair1, member2Pair1],
+      })
+      const pair2 = new Pair({
+        ...normalPair2,
+        members: [member1Pair2, member2Pair2],
+      })
+      expect((): void => {
+        new Team({
+          ...abnormalTeam,
+          pairs: [pair1, pair2],
+        })
+      }).toThrow('半角数字しかteamの名前には使用できません。')
     })
   })
 })
