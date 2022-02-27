@@ -205,5 +205,14 @@ describe('task.entity.test', () => {
         })
       }).toThrow('3名より多いペアは存在できません。')
     })
+    it('[異常系]pairのメンバーが2名よりも少ない場合エラーを吐く', () => {
+      const member1Pair1 = new Member(normalMember1Pair1)
+      expect((): void => {
+        new Pair({
+          ...normalPair1,
+          members: [member1Pair1],
+        })
+      }).toThrow('2名より少ないペアは存在できません。')
+    })
   })
 })
