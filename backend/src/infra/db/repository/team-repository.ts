@@ -88,31 +88,16 @@ export class TeamRepository implements ITeamRepository {
     })
   }
 
-  public async getByNameLast(): Promise<Team | null> {
+  public async getTeamNameByNameLast(): Promise<string | null> {
     const gettedTeam = await this.prismaClient.team.findFirst({
       orderBy: { name: 'desc' },
-      include: {
-        TeamPair: { include: { pair: { include: { PairMember: true } } } },
+      select: {
+        name: true,
       },
     })
     if (!gettedTeam) {
       return null
     }
-    const pairsEntity = gettedTeam.TeamPair.map((teamPair) => {
-      const membersEntity = teamPair.pair.PairMember.map((pairMember) => {
-        return new Member({ id: pairMember.id })
-      })
-      return new Pair({
-        id: teamPair.pair.id,
-        name: teamPair.pair.name,
-        teamPairId: teamPair.id,
-        members: membersEntity,
-      })
-    })
-    return new Team({
-      id: gettedTeam.id,
-      name: gettedTeam.name,
-      pairs: pairsEntity,
-    })
+    return gettedTeam.name
   }
 }
