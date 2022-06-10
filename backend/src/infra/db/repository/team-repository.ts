@@ -25,53 +25,66 @@ export class TeamRepository implements ITeamRepository {
     })
 
     //teamPairテーブルとpairテーブル、 pairMemberテーブルに対するupsert
-    const savedPairList = pairs.map(async (pair) => {
-      const savedTeamPair = await this.prismaClient.teamPair.upsert({
-        where: {
-          id: pair.getAllProperties().teamPairId,
-        },
-        create: {
-          id: pair.getAllProperties().teamPairId,
-          teamId: id,
-          pairId: pair.getAllProperties().id,
-        },
-        update: {
-          teamId: id,
-          pairId: pair.getAllProperties().id,
-        },
-      })
-      const savedPair = await this.prismaClient.pair.upsert({
-        where: {
-          id: pair.getAllProperties().id,
-        },
-        create: {
-          id: pair.getAllProperties().id,
-          name: pair.getAllProperties().name,
-        },
-        update: {
-          name: pair.getAllProperties().name,
-        },
-      })
-      //pairMemberテーブルの更新
-      const savedMamberList = await Promise.all(
-        pair.members.map(async (member) => {
-          const savedMamber = await this.prismaClient.pairMember.upsert({
-            where: {
-              id: member.getAllProperties().id,
-            },
-            create: {
-              id: member.getAllProperties().id,
-              pairId: pair.getAllProperties().id,
-              userId: member.getAllProperties().id,
-            },
-            update: {
-              pairId: pair.getAllProperties().id,
-              userId: member.getAllProperties().id,
-            },
-          })
-          return new Member({ id: savedMamber.id })
-        }),
-      )
+    const savedPairList = await Promise.all(
+      pairs.map(async (pair) => {
+        const savedTeamPair = await this.prismaClient.teamPair.upsert({
+          where: {
+            id: pair.getAllProperties().teamPairId,
+          },
+          create: {
+            id: pair.getAllProperties().teamPairId,
+            teamId: id,
+            pairId: pair.getAllProperties().id,
+          },
+          update: {
+            teamId: id,
+            pairId: pair.getAllProperties().id,
+          },
+        })
+        const savedPair = await this.prismaClient.pair.upsert({
+          where: {
+            id: pair.getAllProperties().id,
+          },
+          create: {
+            id: pair.getAllProperties().id,
+            name: pair.getAllProperties().name,
+          },
+          update: {
+            name: pair.getAllProperties().name,
+          },
+        })
+        //pairMemberテーブルの更新
+        const savedMamberList = await Promise.all(
+          pair.members.map(async (member) => {
+            const savedMamber = await this.prismaClient.pairMember.upsert({
+              where: {
+                id: member.getAllProperties().id,
+              },
+              create: {
+                id: member.getAllProperties().id,
+                pairId: pair.getAllProperties().id,
+                userId: member.getAllProperties().id,
+              },
+              update: {
+                pairId: pair.getAllProperties().id,
+                userId: member.getAllProperties().id,
+              },
+            })
+            return new Member({ id: savedMamber.id })
+          }),
+        )
+        return new Pair({
+          id: savedPair.id,
+          name: savedPair.name,
+          members: savedMamberList,
+          teamPairId: savedTeamPair.id,
+        })
+      }),
+    )
+    return new Team({
+      id: savedTeam.id,
+      name: savedTeam.name,
+      pairs: savedPairList,
     })
   }
 
