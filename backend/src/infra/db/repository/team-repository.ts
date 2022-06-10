@@ -88,7 +88,7 @@ export class TeamRepository implements ITeamRepository {
     })
   }
 
-  public async getByNameLast(): Promise<Team> {
+  public async getByNameLast(): Promise<Team | null> {
     const gettedTeam = await this.prismaClient.team.findFirst({
       orderBy: { name: 'desc' },
       include: {
@@ -96,7 +96,7 @@ export class TeamRepository implements ITeamRepository {
       },
     })
     if (!gettedTeam) {
-      throw new Error('チームは見つかりませんでした。')
+      return null
     }
     const pairsEntity = gettedTeam.TeamPair.map((teamPair) => {
       const membersEntity = teamPair.pair.PairMember.map((pairMember) => {
