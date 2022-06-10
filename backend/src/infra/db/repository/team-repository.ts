@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { ITeamRepository } from 'src/app/repository-interface/team-repository-interface'
-import { Team } from 'src/domain/entity/team'
+import { Team, Member, Pair } from 'src/domain/entity/team'
 
 export class TeamRepository implements ITeamRepository {
   private prismaClient: PrismaClient
@@ -53,24 +53,25 @@ export class TeamRepository implements ITeamRepository {
         },
       })
       //pairMemberテーブルの更新
-      const savedMamberList = pair.members.map(async (member) => {
-        const savedMamber = await this.prismaClient.pairMember.upsert({
-          where: {
-            id: member.getAllProperties().pairMemberId,
-          },
-          create: {
-            id: member.getAllProperties().pairMemberId,
-            pairId: pair.getAllProperties().id,
-            userId: member.getAllProperties().id,
-          },
-          update: {
-            pairId: pair.getAllProperties().id,
-            userId: member.getAllProperties().id,
-          },
-        })
-        return savedMamber
-      })
-      return { savedTeamPair, savedPair, savedMamberList }
+      const savedMamberList = await Promise.all(
+        pair.members.map(async (member) => {
+          const savedMamber = await this.prismaClient.pairMember.upsert({
+            where: {
+              id: member.getAllProperties().id,
+            },
+            create: {
+              id: member.getAllProperties().id,
+              pairId: pair.getAllProperties().id,
+              userId: member.getAllProperties().id,
+            },
+            update: {
+              pairId: pair.getAllProperties().id,
+              userId: member.getAllProperties().id,
+            },
+          })
+          return new Member({ id: savedMamber.id })
+        }),
+      )
     })
   }
 
