@@ -100,6 +100,7 @@ export class TeamRepository implements ITeamRepository {
     }
     return gettedTeam.name
   }
+  //repositoryで一番メンバー少ないのを取りたいがprismaでの書き方がわからないので一旦保留
   public async getMinimumMemberTeam(): Promise<Team | null> {
     const gettedTeam = await this.prismaClient.team.findMany({
       include: {
@@ -116,7 +117,39 @@ export class TeamRepository implements ITeamRepository {
           },
         },
       },
-      //TODOのorderbyのやり方
+      //TODOのPairMemberでのorderbyのやり方
     })
+    return null
+  }
+
+  public async getAllTeam(): Promise<Team[]> {
+    const gettedTeam = await this.prismaClient.team.findMany({
+      include: {
+        TeamPair: {
+          include: {
+            pair: {
+              include: {
+                PairMember: true,
+              },
+            },
+          },
+        },
+      },
+    })
+    const allTeamEntity = gettedTeam.map((team) => {
+      const pairs = team.TeamPair.map((teamPair) => {
+        const members = teamPair.pair.PairMember.map((pairMember) => {
+          return new Member({ id: pairMember.id })
+        })
+        return new Pair({
+          id: teamPair.pairId,
+          name: teamPair.pair.name,
+          members: members,
+          teamPairId: teamPair.id,
+        })
+      })
+      return new Team({ id: team.id, name: team.name, pairs: pairs })
+    })
+    return allTeamEntity
   }
 }
