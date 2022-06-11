@@ -52,6 +52,13 @@ export class Team {
     }
     return result
   }
+  public getTeamMemberCount() {
+    return this.pairs.reduce(
+      (previousValue, currentValue) =>
+        previousValue + currentValue.membersCount,
+      0,
+    )
+  }
 }
 
 export class Pair {
