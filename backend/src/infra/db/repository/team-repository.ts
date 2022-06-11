@@ -100,4 +100,23 @@ export class TeamRepository implements ITeamRepository {
     }
     return gettedTeam.name
   }
+  public async getMinimumMemberTeam(): Promise<Team | null> {
+    const gettedTeam = await this.prismaClient.team.findMany({
+      include: {
+        TeamPair: {
+          include: {
+            pair: {
+              include: {
+                PairMember: true,
+                _count: {
+                  select: { PairMember: true },
+                },
+              },
+            },
+          },
+        },
+      },
+      //TODOのorderbyのやり方
+    })
+  }
 }
