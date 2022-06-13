@@ -8,7 +8,7 @@ export class TeamService {
   }
   //数字順でつけられるチーム名の次のやつを取得
   public async getNewTeamName() {
-    const lastTeamName = await this.teamRepo.getTeamNameByNameLast()
+    const lastTeamName = await this.teamRepo.getLastTeamName()
     const newTeamName = lastTeamName
       ? (Number(lastTeamName) + 1).toString()
       : '1'

@@ -88,7 +88,7 @@ export class TeamRepository implements ITeamRepository {
     })
   }
 
-  public async getTeamNameByNameLast(): Promise<string | null> {
+  public async getLastTeamName(): Promise<string | null> {
     const gettedTeam = await this.prismaClient.team.findFirst({
       orderBy: { name: 'desc' },
       select: {
