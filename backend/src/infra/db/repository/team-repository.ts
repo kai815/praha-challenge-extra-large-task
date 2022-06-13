@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { ITeamRepository } from 'src/app/repository-interface/team-repository-interface'
-import { Team } from 'src/domain/entity/team'
+import { Team, Member, Pair } from 'src/domain/entity/team'
 
 export class TeamRepository implements ITeamRepository {
   private prismaClient: PrismaClient
@@ -25,57 +25,131 @@ export class TeamRepository implements ITeamRepository {
     })
 
     //teamPairテーブルとpairテーブル、 pairMemberテーブルに対するupsert
-    const savedPairList = pairs.map(async (pair) => {
-      const savedTeamPair = await this.prismaClient.teamPair.upsert({
-        where: {
-          id: pair.getAllProperties().teamPairId,
-        },
-        create: {
-          id: pair.getAllProperties().teamPairId,
-          teamId: id,
-          pairId: pair.getAllProperties().id,
-        },
-        update: {
-          teamId: id,
-          pairId: pair.getAllProperties().id,
-        },
-      })
-      const savedPair = await this.prismaClient.pair.upsert({
-        where: {
-          id: pair.getAllProperties().id,
-        },
-        create: {
-          id: pair.getAllProperties().id,
-          name: pair.getAllProperties().name,
-        },
-        update: {
-          name: pair.getAllProperties().name,
-        },
-      })
-      //pairMemberテーブルの更新
-      const savedMamberList = pair.members.map(async (member) => {
-        const savedMamber = await this.prismaClient.pairMember.upsert({
+    const savedPairList = await Promise.all(
+      pairs.map(async (pair) => {
+        const savedTeamPair = await this.prismaClient.teamPair.upsert({
           where: {
-            id: member.getAllProperties().pairMemberId,
+            id: pair.getAllProperties().teamPairId,
           },
           create: {
-            id: member.getAllProperties().pairMemberId,
+            id: pair.getAllProperties().teamPairId,
+            teamId: id,
             pairId: pair.getAllProperties().id,
-            userId: member.getAllProperties().id,
           },
           update: {
+            teamId: id,
             pairId: pair.getAllProperties().id,
-            userId: member.getAllProperties().id,
           },
         })
-        return savedMamber
-      })
-      return { savedTeamPair, savedPair, savedMamberList }
+        const savedPair = await this.prismaClient.pair.upsert({
+          where: {
+            id: pair.getAllProperties().id,
+          },
+          create: {
+            id: pair.getAllProperties().id,
+            name: pair.getAllProperties().name,
+          },
+          update: {
+            name: pair.getAllProperties().name,
+          },
+        })
+        //pairMemberテーブルの更新
+        const savedMamberList = await Promise.all(
+          pair.members.map(async (member) => {
+            const savedMamber = await this.prismaClient.pairMember.upsert({
+              where: {
+                id: member.getAllProperties().id,
+              },
+              create: {
+                id: member.getAllProperties().id,
+                pairId: pair.getAllProperties().id,
+                userId: member.getAllProperties().id,
+              },
+              update: {
+                pairId: pair.getAllProperties().id,
+                userId: member.getAllProperties().id,
+              },
+            })
+            return new Member({ id: savedMamber.id })
+          }),
+        )
+        return new Pair({
+          id: savedPair.id,
+          name: savedPair.name,
+          members: savedMamberList,
+          teamPairId: savedTeamPair.id,
+        })
+      }),
+    )
+    return new Team({
+      id: savedTeam.id,
+      name: savedTeam.name,
+      pairs: savedPairList,
     })
   }
 
-  public async findByUserId(userId: string): Promise<Team> {
-    //prismaの使い方がわからん
-    this.prismaClient.team.findFirst()
+  public async getLastTeamName(): Promise<string | null> {
+    const gettedTeam = await this.prismaClient.team.findFirst({
+      orderBy: { name: 'desc' },
+      select: {
+        name: true,
+      },
+    })
+    if (!gettedTeam) {
+      return null
+    }
+    return gettedTeam.name
+  }
+  //repositoryで一番メンバー少ないのを取りたいがprismaでの書き方がわからないので一旦保留
+  public async getMinimumMemberTeam(): Promise<Team | null> {
+    const gettedTeam = await this.prismaClient.team.findMany({
+      include: {
+        TeamPair: {
+          include: {
+            pair: {
+              include: {
+                PairMember: true,
+                _count: {
+                  select: { PairMember: true },
+                },
+              },
+            },
+          },
+        },
+      },
+      //TODOのPairMemberでのorderbyのやり方
+    })
+    return null
+  }
+
+  public async getAllTeam(): Promise<Team[]> {
+    const gettedTeam = await this.prismaClient.team.findMany({
+      include: {
+        TeamPair: {
+          include: {
+            pair: {
+              include: {
+                PairMember: true,
+              },
+            },
+          },
+        },
+      },
+    })
+    const allTeamEntity = gettedTeam.map((team) => {
+      const pairs = team.TeamPair.map((teamPair) => {
+        const members = teamPair.pair.PairMember.map((pairMember) => {
+          return new Member({ id: pairMember.id })
+        })
+        return new Pair({
+          id: teamPair.pairId,
+          name: teamPair.pair.name,
+          members: members,
+          teamPairId: teamPair.id,
+        })
+      })
+      return new Team({ id: team.id, name: team.name, pairs: pairs })
+    })
+    return allTeamEntity
   }
 }

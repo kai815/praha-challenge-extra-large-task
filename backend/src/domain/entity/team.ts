@@ -52,6 +52,20 @@ export class Team {
     }
     return result
   }
+  public getTeamMemberCount() {
+    return this.pairs.reduce(
+      (previousValue, currentValue) =>
+        previousValue + currentValue.membersCount,
+      0,
+    )
+  }
+  public getMinimuMemberPair() {
+    return this.pairs.reduce((previousValue, currentValue) =>
+      previousValue.membersCount > currentValue.membersCount
+        ? previousValue
+        : currentValue,
+    )
+  }
 }
 
 export class Pair {
@@ -119,26 +133,38 @@ export class Pair {
   }
 }
 
-export class Member extends User {
-  private pairMemberId: string
-  constructor(props: {
-    id: string
-    name: string
-    email: string
-    status?: Status
-    pairMemberId: string
-  }) {
-    const { id, name, email, status, pairMemberId } = props
-    super({ id, name, email, status })
-    this.pairMemberId = pairMemberId
+// export class Member extends User {
+//   private pairMemberId: string
+//   constructor(props: {
+//     id: string
+//     name: string
+//     email: string
+//     status?: Status
+//     pairMemberId: string
+//   }) {
+//     const { id, name, email, status, pairMemberId } = props
+//     super({ id, name, email, status })
+//     this.pairMemberId = pairMemberId
+//   }
+//   getAllProperties() {
+//     return {
+//       id: this.id,
+//       name: this.name,
+//       email: this.email,
+//       status: this.status,
+//       pairMemberId: this.pairMemberId,
+//     }
+//   }
+// }
+
+export class Member {
+  private id: string
+  constructor(props: { id: string }) {
+    this.id = props.id
   }
   getAllProperties() {
     return {
       id: this.id,
-      name: this.name,
-      email: this.email,
-      status: this.status,
-      pairMemberId: this.pairMemberId,
     }
   }
 }
