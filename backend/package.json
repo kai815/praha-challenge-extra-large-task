@@ -72,5 +72,8 @@
   "resolutions": {
     "colors": "1.4.0",
     "faker":"5.5.3"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed/index.ts"
   }
 }
