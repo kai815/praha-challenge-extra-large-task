@@ -74,6 +74,6 @@
     "faker":"5.5.3"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed/index.ts"
+    "seed": "dotenv -e .local.env ts-node prisma/seed/index.ts"
   }
 }
