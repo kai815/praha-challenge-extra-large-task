@@ -1,11 +1,9 @@
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient({})
-import { createUserTestData } from '../../testUtil/user-data-factory'
+import { userSeed } from './User'
 
 async function main() {
-  const randomUser = createUserTestData()
-  console.log(randomUser)
-  await prisma.user.create({ data: { ...randomUser, status: 'Inmembership' } })
+  await userSeed(prisma)
 }
 main()
   .catch((e) => console.error(e))
