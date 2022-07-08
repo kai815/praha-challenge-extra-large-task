@@ -8,7 +8,7 @@ export async function userTaskSeed(prisma: PrismaClient) {
   //usertaskテーブルのデータ作成
   for (const user of users) {
     for (const task of tasks) {
-      //task1
+      //taskを1つ1つ取り出して、userに紐付ける
       const userTask = {
         id: faker.random.uuid(),
         userId: user.id,

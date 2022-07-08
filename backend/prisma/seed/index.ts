@@ -7,6 +7,7 @@ import { teamSeed } from './Team'
 import { pairSeed } from './Pair'
 
 async function main() {
+  await prisma.pairMember.deleteMany()
   await prisma.userTask.deleteMany()
   await prisma.task.deleteMany()
   await prisma.user.deleteMany()
