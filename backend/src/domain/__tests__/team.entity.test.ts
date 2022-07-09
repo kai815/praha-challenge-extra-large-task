@@ -1,32 +1,18 @@
 import { Team, Pair, Member } from 'src/domain/entity/Team'
 import { createRandomIdString } from 'src/util/random'
-import { Status } from 'src/domain/entity/zaiseki-status'
-import { createUserTestData } from '../../../testUtil/user-data-factory'
 
 describe('task.entity.test', () => {
-  const user1 = createUserTestData()
-  const user2 = createUserTestData()
-  const user3 = createUserTestData()
-  const user4 = createUserTestData()
   const normalMember1Pair1 = {
-    ...user1,
-    status: 'Inmembership' as Status,
-    pairMemberId: createRandomIdString(),
+    id: createRandomIdString(),
   }
   const normalMember2Pair1 = {
-    ...user2,
-    status: 'Inmembership' as Status,
-    pairMemberId: createRandomIdString(),
+    id: createRandomIdString(),
   }
   const normalMember1Pair2 = {
-    ...user3,
-    status: 'Inmembership' as Status,
-    pairMemberId: createRandomIdString(),
+    id: createRandomIdString(),
   }
   const normalMember2Pair2 = {
-    ...user4,
-    status: 'Inmembership' as Status,
-    pairMemberId: createRandomIdString(),
+    id: createRandomIdString(),
   }
   const normalPair1 = {
     id: createRandomIdString(),
@@ -78,18 +64,6 @@ describe('task.entity.test', () => {
       expect(pair1.getAllProperties().membersCount).toEqual(2)
       //member
       expect(member1Pair1.getAllProperties().id).toEqual(normalMember1Pair1.id)
-      expect(member1Pair1.getAllProperties().name).toEqual(
-        normalMember1Pair1.name,
-      )
-      expect(member1Pair1.getAllProperties().email).toEqual(
-        normalMember1Pair1.email,
-      )
-      expect(member1Pair1.getAllProperties().status).toEqual(
-        normalMember1Pair1.status,
-      )
-      expect(member1Pair1.getAllProperties().pairMemberId).toEqual(
-        normalMember1Pair1.pairMemberId,
-      )
     })
   })
   describe('[team]valdateName', () => {
