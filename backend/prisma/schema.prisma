@@ -40,9 +40,9 @@ model UserTask {
   id     String     @id
   status TaskStatus @default(NotStarted)
   user   User       @relation(fields: [userId], references: [id])
-  userId String     @unique
+  userId String
   task   Task       @relation(fields: [taskId], references: [id])
-  taskId String     @unique
+  taskId String
 }
 
 enum TaskStatus {
@@ -63,7 +63,7 @@ model PairMember {
   user   User   @relation(fields: [userId], references: [id])
   userId String @unique
   pair   Pair   @relation(fields: [pairId], references: [id])
-  pairId String @unique
+  pairId String
 }
 
 model Team {
@@ -75,7 +75,7 @@ model Team {
 model TeamPair {
   id     String @id
   team   Team   @relation(fields: [teamId], references: [id])
-  teamId String @unique
+  teamId String
   pair   Pair   @relation(fields: [pairId], references: [id])
   pairId String @unique
 }
