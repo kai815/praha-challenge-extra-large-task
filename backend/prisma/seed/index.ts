@@ -8,6 +8,7 @@ import { pairSeed } from './Pair'
 
 async function main() {
   await prisma.pairMember.deleteMany()
+  await prisma.teamPair.deleteMany()
   await prisma.userTask.deleteMany()
   await prisma.task.deleteMany()
   await prisma.user.deleteMany()
@@ -17,6 +18,7 @@ async function main() {
   await taskSeed(prisma)
   await userTaskSeed(prisma)
   await teamSeed(prisma)
+  // TeamPairとPairMemberは、pairSeedの中で作成する
   await pairSeed(prisma)
 }
 main()

@@ -1,9 +1,12 @@
 import { PrismaClient } from '@prisma/client'
 import * as faker from 'faker'
 import { pairMemberSeed } from '../PairMember'
+import { teamPairSeed } from '../TeamPair'
 
 export async function pairSeed(prisma: PrismaClient) {
   const users = await prisma.user.findMany()
+  const team1 = await prisma.team.findFirst({ where: { name: '1' } })
+  const team2 = await prisma.team.findFirst({ where: { name: '2' } })
   const pair1A = {
     id: faker.random.uuid(),
     name: 'a',
@@ -74,4 +77,9 @@ export async function pairSeed(prisma: PrismaClient) {
   })
   //8~9番目のユーザーをpair2Bに紐付ける
   await pairMemberSeed(prisma, 8, 9, users, pair2B)
+  // TeamPairの作成
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  await teamPairSeed(prisma, [pair1A, pair1B, pair1C], team1!)
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  await teamPairSeed(prisma, [pair2A, pair2B], team2!)
 }
