@@ -17,3 +17,17 @@
 //ペアにメンバーを追加
 //メンバーを追加するのは、domainのentityかな
 //保存するのはrepogitory
+import { ITeamRepository } from 'src/app/repository-interface/team-repository-interface'
+import { TeamService } from 'src/domain/service/team.service'
+export class IncreaseTeamMembeUseCase {
+  private readonly teamRepo: ITeamRepository
+
+  public constructor(teamRepo: ITeamRepository) {
+    this.teamRepo = teamRepo
+  }
+  public async do(): Promise<void> {
+    const teamService = new TeamService(this.teamRepo)
+    //TODO teamServiceもdi？
+    const minimumMemberTeam = await teamService.getMinimumMemberTeam()
+  }
+}
