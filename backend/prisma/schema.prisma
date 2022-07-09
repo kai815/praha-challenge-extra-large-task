@@ -75,7 +75,7 @@ model Team {
 model TeamPair {
   id     String @id
   team   Team   @relation(fields: [teamId], references: [id])
-  teamId String @unique
+  teamId String
   pair   Pair   @relation(fields: [pairId], references: [id])
   pairId String @unique
 }
