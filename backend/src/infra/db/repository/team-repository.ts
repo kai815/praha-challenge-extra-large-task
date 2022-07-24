@@ -55,7 +55,7 @@ export class TeamRepository implements ITeamRepository {
         })
         //pairMemberテーブルの更新
         const savedMamberList = await Promise.all(
-          pair.members.map(async (member) => {
+          pair.getAllProperties().members.map(async (member) => {
             const savedMamber = await this.prismaClient.pairMember.upsert({
               where: {
                 id: member.getAllProperties().id,
@@ -63,7 +63,7 @@ export class TeamRepository implements ITeamRepository {
               create: {
                 id: member.getAllProperties().id,
                 pairId: pair.getAllProperties().id,
-                userId: member.getAllProperties().id,
+                userId: member.getAllProperties().userId,
               },
               update: {
                 pairId: pair.getAllProperties().id,
