@@ -67,13 +67,18 @@ export class Team {
         : currentValue,
     )
   }
-  public updatePairs(updatingPair: Pair) {
-    this.pairs.map((pair) => {
-      if (updatingPair.getAllProperties().id === pair.getAllProperties().id) {
-        return updatingPair
+  public addPairMembers(newMemberInfo: { userId: string; memberId: string }) {
+    const minmumuMemberPair = this.getMinimuMemberPair()
+    minmumuMemberPair.addMember(newMemberInfo)
+    const updatedPairs = this.pairs.map((pair) => {
+      if (
+        minmumuMemberPair.getAllProperties().id === pair.getAllProperties().id
+      ) {
+        return minmumuMemberPair
       }
       return pair
     })
+    this.pairs = updatedPairs
   }
 }
 
@@ -140,8 +145,13 @@ export class Pair {
     }
     return result
   }
-  public addMember(member: Member) {
-    const addedMembers = this.members.concat([member])
+  public addMember(newMemberInfo: { memberId: string; userId: string }) {
+    const newMember = new Member({
+      id: newMemberInfo.memberId,
+      userId: newMemberInfo.userId,
+      pairId: this.getAllProperties().id,
+    })
+    const addedMembers = this.members.concat([newMember])
     if (!this.valdateMembersCount(addedMembers).valid) {
       throw new Error(this.valdateMembersCount(addedMembers).errorMessage)
     }
