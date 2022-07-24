@@ -12,7 +12,9 @@ export class PostUserUseCase {
   private readonly taskQS: ITaskQS
   private readonly userTaskRepo: IUserTaskRepository
   private readonly userTaskFac: IUserTaskFactory
-  private teamRepo: ITeamRepository
+  private readonly teamRepo: ITeamRepository
+  //TODOテストのしやすさを考えてteamserviceもDIしたがいいのか
+  private readonly teamService: TeamService
 
   public constructor(
     userRepo: IUserRepository,
@@ -20,12 +22,16 @@ export class PostUserUseCase {
     taskQS: ITaskQS,
     userTaskRepo: IUserTaskRepository,
     userTaskFac: IUserTaskFactory,
+    teamRepo: ITeamRepository,
+    teamService: TeamService,
   ) {
     this.userRepo = userRepo
     this.userFac = userFac
     this.taskQS = taskQS
     this.userTaskRepo = userTaskRepo
     this.userTaskFac = userTaskFac
+    this.teamRepo = teamRepo
+    this.teamService = teamService
   }
   public async do(params: { name: string; email: string }) {
     const { name, email } = params
@@ -42,8 +48,9 @@ export class PostUserUseCase {
       this.userTaskRepo.save(userTask)
     })
     //チームメンバーに追加
-    //TODOこれだけ直接domainを呼び出してるのが少し違和感
-    const teamService = new TeamService(this.teamRepo)
-    await teamService.increaseTeamMember(userEntity.getAllProperties().id)
+    const addedTeam = await this.teamService.increaseTeamMember(
+      userEntity.getAllProperties().id,
+    )
+    await this.teamRepo.save(addedTeam)
   }
 }
