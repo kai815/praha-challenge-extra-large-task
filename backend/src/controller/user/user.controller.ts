@@ -24,6 +24,8 @@ import { DeleteUserUseCase } from 'src/app/delete-user-usecase'
 import { UserTaskRepository } from 'src/infra/db/repository/user-task-repository'
 import { UserTaskFactory } from 'src/domain/factory/user-task.factory'
 import { TaskQS } from 'src/infra/db/query-service/task-qs'
+import { TeamRepository } from 'src/infra/db/repository/team-repository'
+import { TeamService } from 'src/domain/service/team.service'
 
 @Controller({
   path: '/user',
@@ -60,12 +62,16 @@ export class UserController {
     const taskQS = new TaskQS(prisma)
     const userTaskRepo = new UserTaskRepository(prisma)
     const userTaskFac = new UserTaskFactory(userTaskRepo)
+    const teamRepo = new TeamRepository(prisma)
+    const teamService = new TeamService(teamRepo)
     const usecase = new PostUserUseCase(
       repo,
       factory,
       taskQS,
       userTaskRepo,
       userTaskFac,
+      teamRepo,
+      teamService,
     )
     await usecase.do({
       name: postUserDto.name,

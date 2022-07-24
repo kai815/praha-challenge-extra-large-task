@@ -1,5 +1,6 @@
 import { ITeamRepository } from 'src/app/repository-interface/team-repository-interface'
-import { Team } from 'src/domain/entity/team'
+import { Team, Pair } from 'src/domain/entity/team'
+import { createRandomIdString } from 'src/util/random'
 
 export class TeamService {
   private teamRepo: ITeamRepository
@@ -24,5 +25,22 @@ export class TeamService {
         : currentValue,
     )
     return minimumMemberTeam
+  }
+
+  public async increaseTeamMember(userId: string): Promise<Team> {
+    const minimumMemberTeam = await this.getMinimumMemberTeam()
+    if (!minimumMemberTeam) {
+      throw new Error('最小のチームが存在しません')
+    }
+    const memberId = createRandomIdString()
+    minimumMemberTeam.addPairMembers({
+      userId: userId,
+      memberId: memberId,
+    })
+    return new Team({
+      id: minimumMemberTeam?.getAllProperties().id,
+      name: minimumMemberTeam?.getAllProperties().name,
+      pairs: minimumMemberTeam?.getAllProperties().pairs,
+    })
   }
 }

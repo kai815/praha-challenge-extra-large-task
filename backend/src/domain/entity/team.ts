@@ -4,7 +4,7 @@ import { Status } from './zaiseki-status'
 export class Team {
   private id: string
   public readonly name: string
-  public readonly pairs: Pair[]
+  private pairs: Pair[]
   public constructor(props: { id: string; name: string; pairs: Pair[] }) {
     const { id, name, pairs } = props
     if (!this.valdateName(name).valid) {
@@ -55,24 +55,38 @@ export class Team {
   public getTeamMemberCount() {
     return this.pairs.reduce(
       (previousValue, currentValue) =>
-        previousValue + currentValue.membersCount,
+        previousValue + currentValue.getAllProperties().membersCount,
       0,
     )
   }
   public getMinimuMemberPair() {
     return this.pairs.reduce((previousValue, currentValue) =>
-      previousValue.membersCount > currentValue.membersCount
+      previousValue.getAllProperties().membersCount >
+      currentValue.getAllProperties().membersCount
         ? previousValue
         : currentValue,
     )
+  }
+  public addPairMembers(newMemberInfo: { userId: string; memberId: string }) {
+    const minmumuMemberPair = this.getMinimuMemberPair()
+    minmumuMemberPair.addMember(newMemberInfo)
+    const updatedPairs = this.pairs.map((pair) => {
+      if (
+        minmumuMemberPair.getAllProperties().id === pair.getAllProperties().id
+      ) {
+        return minmumuMemberPair
+      }
+      return pair
+    })
+    this.pairs = updatedPairs
   }
 }
 
 export class Pair {
   private id: string
   public readonly name: string
-  public readonly members: Member[]
-  public readonly membersCount: number
+  private members: Member[]
+  private membersCount: number
   private teamPairId: string
   public constructor(props: {
     id: string
@@ -131,6 +145,19 @@ export class Pair {
     }
     return result
   }
+  public addMember(newMemberInfo: { memberId: string; userId: string }) {
+    const newMember = new Member({
+      id: newMemberInfo.memberId,
+      userId: newMemberInfo.userId,
+      pairId: this.getAllProperties().id,
+    })
+    const addedMembers = this.members.concat([newMember])
+    if (!this.valdateMembersCount(addedMembers).valid) {
+      throw new Error(this.valdateMembersCount(addedMembers).errorMessage)
+    }
+    this.members = addedMembers
+    this.membersCount = this.members.length
+  }
 }
 
 // export class Member extends User {
@@ -159,12 +186,18 @@ export class Pair {
 
 export class Member {
   private id: string
-  constructor(props: { id: string }) {
+  private pairId: string
+  private userId: string
+  constructor(props: { id: string; pairId: string; userId: string }) {
     this.id = props.id
+    this.pairId = props.pairId
+    this.userId = props.userId
   }
   getAllProperties() {
     return {
       id: this.id,
+      pairId: this.pairId,
+      userId: this.userId,
     }
   }
 }
