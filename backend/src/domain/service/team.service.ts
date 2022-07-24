@@ -38,9 +38,9 @@ export class TeamService {
       memberId: memberId,
     })
     return new Team({
-      id: minimumMemberTeam?.getAllProperties().id as string,
-      name: minimumMemberTeam?.getAllProperties().name as string,
-      pairs: minimumMemberTeam?.getAllProperties().pairs as Pair[],
+      id: minimumMemberTeam?.getAllProperties().id,
+      name: minimumMemberTeam?.getAllProperties().name,
+      pairs: minimumMemberTeam?.getAllProperties().pairs,
     })
   }
 }
