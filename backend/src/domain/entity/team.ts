@@ -159,12 +159,18 @@ export class Pair {
 
 export class Member {
   private id: string
-  constructor(props: { id: string }) {
+  private pairId: string
+  private userId: string
+  constructor(props: { id: string; pairId: string; userId: string }) {
     this.id = props.id
+    this.pairId = props.pairId
+    this.userId = props.userId
   }
   getAllProperties() {
     return {
       id: this.id,
+      pairId: this.pairId,
+      userId: this.userId,
     }
   }
 }

@@ -70,7 +70,11 @@ export class TeamRepository implements ITeamRepository {
                 userId: member.getAllProperties().id,
               },
             })
-            return new Member({ id: savedMamber.id })
+            return new Member({
+              id: savedMamber.id,
+              pairId: savedMamber.pairId,
+              userId: savedMamber.userId,
+            })
           }),
         )
         return new Pair({
@@ -139,7 +143,11 @@ export class TeamRepository implements ITeamRepository {
     const allTeamEntity = gettedTeam.map((team) => {
       const pairs = team.TeamPair.map((teamPair) => {
         const members = teamPair.pair.PairMember.map((pairMember) => {
-          return new Member({ id: pairMember.id })
+          return new Member({
+            id: pairMember.id,
+            pairId: pairMember.pairId,
+            userId: pairMember.userId,
+          })
         })
         return new Pair({
           id: teamPair.pairId,
