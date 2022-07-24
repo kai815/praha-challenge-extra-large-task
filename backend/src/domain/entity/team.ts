@@ -4,7 +4,7 @@ import { Status } from './zaiseki-status'
 export class Team {
   private id: string
   public readonly name: string
-  public readonly pairs: Pair[]
+  private pairs: Pair[]
   public constructor(props: { id: string; name: string; pairs: Pair[] }) {
     const { id, name, pairs } = props
     if (!this.valdateName(name).valid) {
@@ -55,24 +55,33 @@ export class Team {
   public getTeamMemberCount() {
     return this.pairs.reduce(
       (previousValue, currentValue) =>
-        previousValue + currentValue.membersCount,
+        previousValue + currentValue.getAllProperties().membersCount,
       0,
     )
   }
   public getMinimuMemberPair() {
     return this.pairs.reduce((previousValue, currentValue) =>
-      previousValue.membersCount > currentValue.membersCount
+      previousValue.getAllProperties().membersCount >
+      currentValue.getAllProperties().membersCount
         ? previousValue
         : currentValue,
     )
+  }
+  public updatePairs(updatingPair: Pair) {
+    this.pairs.map((pair) => {
+      if (updatingPair.getAllProperties().id === pair.getAllProperties().id) {
+        return updatingPair
+      }
+      return pair
+    })
   }
 }
 
 export class Pair {
   private id: string
   public readonly name: string
-  public readonly members: Member[]
-  public readonly membersCount: number
+  private members: Member[]
+  private membersCount: number
   private teamPairId: string
   public constructor(props: {
     id: string
@@ -130,6 +139,14 @@ export class Pair {
       return result
     }
     return result
+  }
+  public addMember(member: Member) {
+    const addedMembers = this.members.concat([member])
+    if (!this.valdateMembersCount(addedMembers).valid) {
+      throw new Error(this.valdateMembersCount(addedMembers).errorMessage)
+    }
+    this.members = addedMembers
+    this.membersCount = this.members.length
   }
 }
 
