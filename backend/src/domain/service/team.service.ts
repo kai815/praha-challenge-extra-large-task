@@ -40,5 +40,6 @@ export class TeamService {
     minmumuMemberPair?.addMember(newMember)
     //TODO チームががなかった時の処理すればasは不要になるはず
     minimumMemberTeam?.updatePairs(minmumuMemberPair as Pair)
+    await this.teamRepo.save(minimumMemberTeam as Team)
   }
 }

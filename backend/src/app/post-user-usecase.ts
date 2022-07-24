@@ -3,6 +3,8 @@ import { IUserFactory } from './factory-interface/user-factory-interface'
 import { ITaskQS } from './query-service-interface/task-qs'
 import { IUserTaskFactory } from './factory-interface/user-task-factory-interface'
 import { IUserTaskRepository } from './repository-interface/user-task-repository-interface'
+import { ITeamRepository } from 'src/app/repository-interface/team-repository-interface'
+import { TeamService } from 'src/domain/service/team.service'
 
 export class PostUserUseCase {
   private readonly userRepo: IUserRepository
@@ -10,6 +12,7 @@ export class PostUserUseCase {
   private readonly taskQS: ITaskQS
   private readonly userTaskRepo: IUserTaskRepository
   private readonly userTaskFac: IUserTaskFactory
+  private teamRepo: ITeamRepository
 
   public constructor(
     userRepo: IUserRepository,
@@ -38,5 +41,9 @@ export class PostUserUseCase {
       })
       this.userTaskRepo.save(userTask)
     })
+    //チームメンバーに追加
+    //TODOこれだけ直接domainを呼び出してるのが少し違和感
+    const teamService = new TeamService(this.teamRepo)
+    await teamService.increaseTeamMember(userEntity.getAllProperties().id)
   }
 }
