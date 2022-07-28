@@ -7,6 +7,8 @@ import { TaskQS } from 'src/infra/db/query-service/task-qs'
 import { PostUserUseCase } from '../post-user-usecase'
 import { mocked } from 'ts-jest/utils'
 import { MockedObjectDeep } from 'ts-jest/dist/utils/testing'
+import { TeamRepository } from 'src/infra/db/repository/team-repository'
+import { TeamService } from 'src/domain/service/team.service'
 
 jest.mock('@prisma/client')
 jest.mock('src/infra/db/repository/user-repository')
@@ -14,6 +16,8 @@ jest.mock('src/domain/factory/user.factory')
 jest.mock('src/infra/db/repository/user-task-repository')
 jest.mock('src/domain/factory/user-task.factory')
 jest.mock('src/infra/db/query-service/task-qs')
+jest.mock('src/infra/db/query-service/team-repository')
+jest.mock('src/domain/service/team.service')
 
 describe('do', () => {
   let mockUserRepo: MockedObjectDeep<UserRepository>
@@ -21,6 +25,8 @@ describe('do', () => {
   let mocktaskQS: MockedObjectDeep<TaskQS>
   let mockUserTaskRepo: MockedObjectDeep<UserTaskRepository>
   let mockUserTaskFac: MockedObjectDeep<UserTaskFactory>
+  let mockTeamRepo: MockedObjectDeep<TeamRepository>
+  let mockTeamService: MockedObjectDeep<TeamService>
   beforeAll(() => {
     const prisma = new PrismaClient()
     mockUserRepo = mocked(new UserRepository(prisma), true)
@@ -28,6 +34,8 @@ describe('do', () => {
     mocktaskQS = mocked(new TaskQS(prisma), true)
     mockUserTaskRepo = mocked(new UserTaskRepository(prisma), true)
     mockUserTaskFac = mocked(new UserTaskFactory(mockUserTaskRepo), true)
+    mockTeamRepo = mocked(new TeamRepository(prisma), true)
+    mockTeamService = mocked(new TeamService(mockTeamRepo), true)
   })
   it('[正常系]: 例外が発生しない', async () => {
     const usecase = new PostUserUseCase(
@@ -36,6 +44,8 @@ describe('do', () => {
       mocktaskQS,
       mockUserTaskRepo,
       mockUserTaskFac,
+      mockTeamRepo,
+      mockTeamService,
     )
     return expect(
       usecase.do({
@@ -53,6 +63,8 @@ describe('do', () => {
       mocktaskQS,
       mockUserTaskRepo,
       mockUserTaskFac,
+      mockTeamRepo,
+      mockTeamService,
     )
     return expect(
       usecase.do({
