@@ -67,7 +67,7 @@ export class TeamRepository implements ITeamRepository {
               },
               update: {
                 pairId: pair.getAllProperties().id,
-                userId: member.getAllProperties().id,
+                userId: member.getAllProperties().userId,
               },
             })
             return new Member({
