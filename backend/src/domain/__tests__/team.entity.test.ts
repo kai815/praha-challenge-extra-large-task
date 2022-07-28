@@ -2,18 +2,10 @@ import { Team, Pair, Member } from 'src/domain/entity/Team'
 import { createRandomIdString } from 'src/util/random'
 
 describe('task.entity.test', () => {
-  const normalMember1Pair1 = {
-    id: createRandomIdString(),
-  }
-  const normalMember2Pair1 = {
-    id: createRandomIdString(),
-  }
-  const normalMember1Pair2 = {
-    id: createRandomIdString(),
-  }
-  const normalMember2Pair2 = {
-    id: createRandomIdString(),
-  }
+  const userIdMember1Pair1 = createRandomIdString()
+  const userIdMember2Pair1 = createRandomIdString()
+  const userIdMember1Pair2 = createRandomIdString()
+  const userIdMember2Pair2 = createRandomIdString()
   const normalPair1 = {
     id: createRandomIdString(),
     name: 'a',
@@ -27,6 +19,26 @@ describe('task.entity.test', () => {
   const normalTeam = {
     id: createRandomIdString(),
     name: '1',
+  }
+  const normalMember1Pair1 = {
+    id: createRandomIdString(),
+    pairId: normalPair1.id,
+    userId: userIdMember1Pair1,
+  }
+  const normalMember2Pair1 = {
+    id: createRandomIdString(),
+    pairId: normalPair1.id,
+    userId: userIdMember2Pair1,
+  }
+  const normalMember1Pair2 = {
+    id: createRandomIdString(),
+    pairId: normalPair2.id,
+    userId: userIdMember1Pair2,
+  }
+  const normalMember2Pair2 = {
+    id: createRandomIdString(),
+    pairId: normalPair2.id,
+    userId: userIdMember2Pair2,
   }
   describe('[team,pair,member]getAllProperties', () => {
     it('[正常系]team,pair,memberの作成したインスタンスのプロパティが全て取れる', () => {
