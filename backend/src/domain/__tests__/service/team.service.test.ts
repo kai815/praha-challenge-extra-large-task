@@ -15,6 +15,7 @@ import {
   normalMember2Pair3,
   normalMember3Pair3,
 } from '../../../../testUtil/team-data-factory'
+import { createRandomIdString } from 'src/util/random'
 
 //mock
 jest.mock('src/infra/db/repository/team-repository') // パスを指定
@@ -81,5 +82,19 @@ describe('team.service.test', () => {
       expect(minimumMemberTeam).toEqual(team2)
     })
   })
-  // describe('increaseTeamMember', () => {})
+  describe('increaseTeamMember', () => {
+    it('[正常系]チームメンバーが増えているかつ人数が少ないペアで人数が増えている', async () => {
+      TeamRepoMock.mockImplementationOnce(() => {
+        return {
+          getAllTeam: async () => {
+            return [team1]
+          },
+        }
+      })
+      const teamService = new TeamService(new TeamRepoMock())
+      const addingUserId = createRandomIdString()
+      const addedTeam = await teamService.increaseTeamMember(addingUserId)
+      expect(addedTeam.getTeamMemberCount()).toEqual(6)
+    })
+  })
 })
