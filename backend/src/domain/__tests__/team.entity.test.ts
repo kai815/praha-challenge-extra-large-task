@@ -299,4 +299,16 @@ describe('task.entity.test', () => {
       ])
     })
   })
+  describe('[pair]isEnableDecreaseMember', () => {
+    it('[正常系]メンバーが3名以上ならtrue', () => {
+      const member1Pair1 = new Member(normalMember1Pair1)
+      const member2Pair1 = new Member(normalMember2Pair1)
+      const member3Pair1 = new Member(normalMember3Pair1)
+      const pair = new Pair({
+        ...normalPair1,
+        members: [member1Pair1, member2Pair1, member3Pair1],
+      })
+      expect(pair.isEnableDecreaseMember()).toEqual(true)
+    })
+  })
 })
