@@ -80,6 +80,18 @@ export class Team {
     })
     this.pairs = updatedPairs
   }
+  public getPairByUserId(userId: string) {
+    const belogedPair = this.pairs.filter((pair) => {
+      let result = false
+      pair.getAllProperties().members.forEach((member) => {
+        if (member.getAllProperties().userId === userId) {
+          result = true
+        }
+      })
+      return result
+    })
+    return belogedPair[0]
+  }
 }
 
 export class Pair {
