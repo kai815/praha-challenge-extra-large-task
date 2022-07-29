@@ -1,52 +1,17 @@
 import { Team, Pair, Member } from 'src/domain/entity/Team'
 import { createRandomIdString } from 'src/util/random'
+import {
+  normalPair1,
+  normalPair2,
+  normalTeam,
+  normalMember1Pair1,
+  normalMember2Pair1,
+  normalMember3Pair1,
+  normalMember1Pair2,
+  normalMember2Pair2,
+} from '../../../testUtil/team-data-factory'
 
 describe('task.entity.test', () => {
-  const userIdMember1Pair1 = createRandomIdString()
-  const userIdMember2Pair1 = createRandomIdString()
-  const userIdMember1Pair2 = createRandomIdString()
-  const userIdMember2Pair2 = createRandomIdString()
-  const normalPair1 = {
-    id: createRandomIdString(),
-    name: 'a',
-    teamPairId: createRandomIdString(),
-  }
-  const normalPair2 = {
-    id: createRandomIdString(),
-    name: 'b',
-    teamPairId: createRandomIdString(),
-  }
-  const normalTeam = {
-    id: createRandomIdString(),
-    name: '1',
-  }
-  //pair1のメンバー
-  const normalMember1Pair1 = {
-    id: createRandomIdString(),
-    pairId: normalPair1.id,
-    userId: userIdMember1Pair1,
-  }
-  const normalMember2Pair1 = {
-    id: createRandomIdString(),
-    pairId: normalPair1.id,
-    userId: userIdMember2Pair1,
-  }
-  const normalMember3Pair1 = {
-    id: createRandomIdString(),
-    pairId: normalPair1.id,
-    userId: userIdMember2Pair1,
-  }
-  //pair2のメンバー
-  const normalMember1Pair2 = {
-    id: createRandomIdString(),
-    pairId: normalPair2.id,
-    userId: userIdMember1Pair2,
-  }
-  const normalMember2Pair2 = {
-    id: createRandomIdString(),
-    pairId: normalPair2.id,
-    userId: userIdMember2Pair2,
-  }
   describe('[team,pair,member]getAllProperties', () => {
     it('[正常系]team,pair,memberの作成したインスタンスのプロパティが全て取れる', () => {
       //テストのためのインスタンスの生成が長い気がする
