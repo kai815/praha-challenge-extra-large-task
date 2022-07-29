@@ -5,4 +5,5 @@ export interface ITeamRepository {
   getLastTeamName(): Promise<string | null>
   getMinimumMemberTeam(): Promise<Team | null>
   getAllTeam(): Promise<Team[]>
+  findTeamByUser(userId: string): Promise<Team>
 }

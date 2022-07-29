@@ -160,4 +160,40 @@ export class TeamRepository implements ITeamRepository {
     })
     return allTeamEntity
   }
+  public async findTeamByUser(userId: string): Promise<Team> {
+    const gettedTeam = await this.prismaClient.team.findFirst({
+      include: {
+        TeamPair: {
+          include: {
+            pair: {
+              include: {
+                PairMember: {
+                  where: { userId },
+                },
+              },
+            },
+          },
+        },
+      },
+    })
+    if (!gettedTeam) {
+      throw new Error('所属するチームが見つかりませんでした')
+    }
+    const pairs = gettedTeam.TeamPair.map((teamPair) => {
+      const members = teamPair.pair.PairMember.map((pairMember) => {
+        return new Member({
+          id: pairMember.id,
+          pairId: pairMember.pairId,
+          userId: pairMember.userId,
+        })
+      })
+      return new Pair({
+        id: teamPair.pairId,
+        name: teamPair.pair.name,
+        members: members,
+        teamPairId: teamPair.id,
+      })
+    })
+    return new Team({ id: gettedTeam.id, name: gettedTeam.name, pairs })
+  }
 }
