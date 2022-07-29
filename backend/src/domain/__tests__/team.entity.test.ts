@@ -288,4 +288,28 @@ describe('task.entity.test', () => {
       }).toThrow('2名より少ないペアは存在できません。')
     })
   })
+  describe('[pair]addMember', () => {
+    it('[正常系]メンバーが追加されている', () => {
+      const member1Pair1 = new Member(normalMember1Pair1)
+      const member2Pair1 = new Member(normalMember2Pair1)
+      // const member3Pair1 = new Member(normalMember3Pair1)
+      const pair = new Pair({
+        ...normalPair1,
+        members: [member1Pair1, member2Pair1],
+      })
+      const addingUserId = createRandomIdString()
+      const addingMemberId = createRandomIdString()
+      const addedMember = new Member({
+        id: addingMemberId,
+        userId: addingUserId,
+        pairId: normalPair1.id,
+      })
+      pair.addMember({ userId: addingUserId, memberId: addingMemberId })
+      expect(pair.getAllProperties().members).toEqual([
+        member1Pair1,
+        member2Pair1,
+        addedMember,
+      ])
+    })
+  })
 })
