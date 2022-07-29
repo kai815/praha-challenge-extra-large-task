@@ -170,6 +170,9 @@ export class Pair {
     this.members = addedMembers
     this.membersCount = this.members.length
   }
+  public isEnableDecreaseMember() {
+    return this.membersCount >= 3
+  }
 }
 
 // export class Member extends User {
