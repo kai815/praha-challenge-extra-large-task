@@ -93,7 +93,14 @@ export class Team {
     return belogedPair[0]
   }
   public isEnableDecreaseTeamMember() {
-    this.getTeamMemberCount() >= 4
+    return this.getTeamMemberCount() >= 4
+  }
+  //減らしてもチームメンバー内での移動で収まるか
+  public isEnableDecreaseWithinTeam(userId: string) {
+    const gettedPair = this.getPairByUserId(userId)
+    return (
+      gettedPair?.isEnableDecreaseMember() && this.isEnableDecreaseTeamMember()
+    )
   }
 }
 
