@@ -92,6 +92,9 @@ export class Team {
     })
     return belogedPair[0]
   }
+  public isEnableDecreaseTeamMember() {
+    this.getTeamMemberCount() >= 4
+  }
 }
 
 export class Pair {
