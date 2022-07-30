@@ -173,6 +173,12 @@ export class Pair {
   public isEnableDecreaseMember() {
     return this.membersCount >= 3
   }
+  public getRemoveMember(userId: string) {
+    const removingMember = this.members.filter(
+      (member) => member.getAllProperties().userId === userId,
+    )
+    return removingMember[0]
+  }
 }
 
 // export class Member extends User {
