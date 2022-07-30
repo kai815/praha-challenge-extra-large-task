@@ -1,5 +1,6 @@
 import { User } from './user'
 import { Status } from './zaiseki-status'
+import { createRandomIdString } from 'src/util/random'
 
 export class Team {
   private id: string
@@ -120,11 +121,43 @@ export class Team {
         })
       })
       this.pairs = updatedPairs
+      return
     }
+    //他のペアに移す処理をかく
+    this.movePair(belongedPair!, userId)
   }
   public getMemberByUserId(userId: string) {
     const belongedPair = this.getPairByUserId(userId)
     return belongedPair?.getMemberByUserId(userId)
+  }
+  ///他のペアに移す処理
+  private movePair(fromPair: Pair, userId: string) {
+    const toPair = this.getMoveToPair(fromPair)
+    //3名未満の場合はそのペアに追加する
+    if (toPair.getAllProperties().membersCount < 3) {
+      toPair.addMember({ userId, memberId: createRandomIdString() })
+      const updatedPairs = this.pairs.map((pair) => {
+        if (pair.getAllProperties().id === toPair.getAllProperties().id) {
+          return toPair
+        }
+        return pair
+      })
+      this.pairs = updatedPairs
+    }
+    //ペアを分割する
+  }
+  private getMoveToPair(fromPair: Pair) {
+    const otherTeams = this.pairs.filter((pair) => {
+      pair.getAllProperties().id !== fromPair.getAllProperties().id
+    })
+    const otherMinmumuMemberPair = otherTeams.reduce(
+      (previousValue, currentValue) =>
+        previousValue.getAllProperties().membersCount <
+        currentValue.getAllProperties().membersCount
+          ? previousValue
+          : currentValue,
+    )
+    return otherMinmumuMemberPair
   }
 }
 
