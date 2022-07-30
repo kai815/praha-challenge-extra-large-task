@@ -1,5 +1,5 @@
 import { ITeamRepository } from 'src/app/repository-interface/team-repository-interface'
-import { Team, Pair } from 'src/domain/entity/team'
+import { Team, Pair, Member } from 'src/domain/entity/team'
 import { createRandomIdString } from 'src/util/random'
 
 export class TeamService {
@@ -42,5 +42,12 @@ export class TeamService {
       name: minimumMemberTeam?.getAllProperties().name,
       pairs: minimumMemberTeam?.getAllProperties().pairs,
     })
+  }
+  public async decreaseTeamMember(userId: string): Promise<void | Member> {
+    const belongedTeam = await this.teamRepo.findTeamByUser(userId)
+    const belongedPair = belongedTeam.getPairByUserId(userId)
+    if (belongedPair?.isEnableDecreaseMember()) {
+      return belongedPair.getRemoveMember(userId)
+    }
   }
 }
