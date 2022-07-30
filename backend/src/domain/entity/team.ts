@@ -122,6 +122,10 @@ export class Team {
       this.pairs = updatedPairs
     }
   }
+  public getMemberByUserId(userId: string) {
+    const belongedPair = this.getPairByUserId(userId)
+    return belongedPair?.getMemberByUserId(userId)
+  }
 }
 
 export class Pair {
@@ -203,7 +207,7 @@ export class Pair {
   public isEnableDecreaseMember() {
     return this.membersCount >= 3
   }
-  public getRemoveMember(userId: string) {
+  public getMemberByUserId(userId: string) {
     const removingMember = this.members.filter(
       (member) => member.getAllProperties().userId === userId,
     )

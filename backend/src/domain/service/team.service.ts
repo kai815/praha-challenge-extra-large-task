@@ -47,7 +47,7 @@ export class TeamService {
     const belongedTeam = await this.teamRepo.findTeamByUser(userId)
     const belongedPair = belongedTeam.getPairByUserId(userId)
     if (belongedPair?.isEnableDecreaseMember()) {
-      return belongedPair.getRemoveMember(userId)
+      return belongedPair.getMemberByUserId(userId)
     }
   }
 }
