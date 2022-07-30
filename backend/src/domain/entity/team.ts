@@ -97,10 +97,30 @@ export class Team {
   }
   //減らしてもチームメンバー内での移動で収まるか
   public isEnableDecreaseWithinTeam(userId: string) {
-    const gettedPair = this.getPairByUserId(userId)
+    const belongedPair = this.getPairByUserId(userId)
     return (
-      gettedPair?.isEnableDecreaseMember() && this.isEnableDecreaseTeamMember()
+      belongedPair?.isEnableDecreaseMember() &&
+      this.isEnableDecreaseTeamMember()
     )
+  }
+  public decreaseTeamMember(userId: string) {
+    const belongedPair = this.getPairByUserId(userId)
+    if (belongedPair?.isEnableDecreaseMember()) {
+      const updatedPairs = this.pairs.map((pair) => {
+        const filterdMember = pair
+          .getAllProperties()
+          .members.filter(
+            (member) => member.getAllProperties().userId !== userId,
+          )
+        return new Pair({
+          id: pair.getAllProperties().id,
+          name: pair.getAllProperties().name,
+          teamPairId: pair.getAllProperties().teamPairId,
+          members: filterdMember,
+        })
+      })
+      this.pairs = updatedPairs
+    }
   }
 }
 
