@@ -143,8 +143,11 @@ export class Team {
         return pair
       })
       this.pairs = updatedPairs
+      return
     }
     //ペアを分割する
+    this.splitPair(toPair, userId)
+    return
   }
   private getMoveToPair(fromPair: Pair) {
     const otherTeams = this.pairs.filter((pair) => {
@@ -158,6 +161,48 @@ export class Team {
           : currentValue,
     )
     return otherMinmumuMemberPair
+  }
+  private splitPair(toPair: Pair, userId: string) {
+    //仕様的に特に条件はないので、最後のmemberを新しいペアに追加するためにこのペアから抜く
+    const splitedToPairMember = toPair
+      .getAllProperties()
+      .members.filter((_member, index) => index !== 2)
+    const splitedToPair = new Pair({
+      id: toPair.getAllProperties().id,
+      name: toPair.getAllProperties().name,
+      teamPairId: toPair.getAllProperties().teamPairId,
+      members: splitedToPairMember,
+    })
+    const splitingMember = toPair.getAllProperties().members[2]!
+    const newPairId = createRandomIdString()
+    const newPairMember1 = new Member({
+      id: splitingMember.getAllProperties().id,
+      userId: splitingMember.getAllProperties().userId,
+      pairId: newPairId,
+    })
+    const newPairMember2 = new Member({
+      id: createRandomIdString(),
+      pairId: newPairId,
+      userId: userId,
+    })
+    const newPair = new Pair({
+      id: newPairId,
+      //TODO名前は仮
+      name: `${toPair.getAllProperties().name}a`,
+      teamPairId: createRandomIdString(),
+      members: [newPairMember1, newPairMember2],
+    })
+    const updatedPairs = this.pairs
+      .map((pair) => {
+        if (
+          pair.getAllProperties().id === splitedToPair.getAllProperties().id
+        ) {
+          return splitedToPair
+        }
+        return pair
+      })
+      .concat([newPair])
+    this.pairs = updatedPairs
   }
 }
 
