@@ -167,7 +167,7 @@ export class TeamRepository implements ITeamRepository {
           include: {
             pair: {
               include: {
-                //TODOちゃんとpairMemberのデータ入ってない
+                //ちゃんとpairMemberのデータ入ってない
                 PairMember: {
                   where: { userId },
                 },
@@ -177,24 +177,33 @@ export class TeamRepository implements ITeamRepository {
         },
       },
     })
+    console.log({ gettedTeam })
     if (!gettedTeam) {
       throw new Error('所属するチームが見つかりませんでした')
     }
-    const pairs = gettedTeam.TeamPair.map((teamPair) => {
-      const members = teamPair.pair.PairMember.map((pairMember) => {
-        return new Member({
-          id: pairMember.id,
-          pairId: pairMember.pairId,
-          userId: pairMember.userId,
+    const pairs = await Promise.all(
+      gettedTeam.TeamPair.map(async (teamPair) => {
+        //ちゃんとpairMemberのデータ入ってないので再度取得
+        const gettedPairMembers = await this.prismaClient.pairMember.findMany({
+          where: {
+            pairId: teamPair.pairId,
+          },
         })
-      })
-      return new Pair({
-        id: teamPair.pairId,
-        name: teamPair.pair.name,
-        members: members,
-        teamPairId: teamPair.id,
-      })
-    })
+        const members = gettedPairMembers.map((pairMember) => {
+          return new Member({
+            id: pairMember.id,
+            pairId: pairMember.pairId,
+            userId: pairMember.userId,
+          })
+        })
+        return new Pair({
+          id: teamPair.pairId,
+          name: teamPair.pair.name,
+          members: members,
+          teamPairId: teamPair.id,
+        })
+      }),
+    )
     return new Team({ id: gettedTeam.id, name: gettedTeam.name, pairs })
   }
   public async deleteMember(member: Member) {
