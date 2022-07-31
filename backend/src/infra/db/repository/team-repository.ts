@@ -167,6 +167,7 @@ export class TeamRepository implements ITeamRepository {
           include: {
             pair: {
               include: {
+                //TODOちゃんとpairMemberのデータ入ってない
                 PairMember: {
                   where: { userId },
                 },
