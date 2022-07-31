@@ -196,4 +196,11 @@ export class TeamRepository implements ITeamRepository {
     })
     return new Team({ id: gettedTeam.id, name: gettedTeam.name, pairs })
   }
+  public async deleteMember(member: Member) {
+    await this.prismaClient.pairMember.delete({
+      where: {
+        id: member.getAllProperties().id,
+      },
+    })
+  }
 }

@@ -43,11 +43,11 @@ export class TeamService {
       pairs: minimumMemberTeam?.getAllProperties().pairs,
     })
   }
-  public async decreaseTeamMember(userId: string): Promise<void | Member> {
-    const belongedTeam = await this.teamRepo.findTeamByUser(userId)
-    const belongedPair = belongedTeam.getPairByUserId(userId)
-    if (belongedPair?.isEnableDecreaseMember()) {
-      return belongedPair.getMemberByUserId(userId)
-    }
-  }
+  // public async decreaseTeamMember(userId: string): Promise<void | Member> {
+  //   const belongedTeam = await this.teamRepo.findTeamByUser(userId)
+  //   const belongedPair = belongedTeam.getPairByUserId(userId)
+  //   if (belongedPair?.isEnableDecreaseMember()) {
+  //     return belongedPair.getMemberByUserId(userId)
+  //   }
+  // }
 }
