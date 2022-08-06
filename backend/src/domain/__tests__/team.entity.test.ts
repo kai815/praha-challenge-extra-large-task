@@ -1,45 +1,17 @@
 import { Team, Pair, Member } from 'src/domain/entity/Team'
 import { createRandomIdString } from 'src/util/random'
+import {
+  normalPair1,
+  normalPair2,
+  normalTeam,
+  normalMember1Pair1,
+  normalMember2Pair1,
+  normalMember3Pair1,
+  normalMember1Pair2,
+  normalMember2Pair2,
+} from '../../../testUtil/team-data-factory'
 
 describe('task.entity.test', () => {
-  const userIdMember1Pair1 = createRandomIdString()
-  const userIdMember2Pair1 = createRandomIdString()
-  const userIdMember1Pair2 = createRandomIdString()
-  const userIdMember2Pair2 = createRandomIdString()
-  const normalPair1 = {
-    id: createRandomIdString(),
-    name: 'a',
-    teamPairId: createRandomIdString(),
-  }
-  const normalPair2 = {
-    id: createRandomIdString(),
-    name: 'b',
-    teamPairId: createRandomIdString(),
-  }
-  const normalTeam = {
-    id: createRandomIdString(),
-    name: '1',
-  }
-  const normalMember1Pair1 = {
-    id: createRandomIdString(),
-    pairId: normalPair1.id,
-    userId: userIdMember1Pair1,
-  }
-  const normalMember2Pair1 = {
-    id: createRandomIdString(),
-    pairId: normalPair1.id,
-    userId: userIdMember2Pair1,
-  }
-  const normalMember1Pair2 = {
-    id: createRandomIdString(),
-    pairId: normalPair2.id,
-    userId: userIdMember1Pair2,
-  }
-  const normalMember2Pair2 = {
-    id: createRandomIdString(),
-    pairId: normalPair2.id,
-    userId: userIdMember2Pair2,
-  }
   describe('[team,pair,member]getAllProperties', () => {
     it('[正常系]team,pair,memberの作成したインスタンスのプロパティが全て取れる', () => {
       //テストのためのインスタンスの生成が長い気がする
@@ -146,6 +118,86 @@ describe('task.entity.test', () => {
       }).toThrow('3名未満のteamは存在できません。')
     })
   })
+  describe('[team]getTeamMemberCount', () => {
+    it('[正常系]メンバーの人数が取得できる', () => {
+      const member1Pair1 = new Member(normalMember1Pair1)
+      const member2Pair1 = new Member(normalMember2Pair1)
+      const member1Pair2 = new Member(normalMember1Pair2)
+      const member2Pair2 = new Member(normalMember2Pair2)
+      const pair1 = new Pair({
+        ...normalPair1,
+        members: [member1Pair1, member2Pair1],
+      })
+      const pair2 = new Pair({
+        ...normalPair2,
+        members: [member1Pair2, member2Pair2],
+      })
+      const team = new Team({
+        ...normalTeam,
+        pairs: [pair1, pair2],
+      })
+      expect(team.getTeamMemberCount()).toEqual(4)
+    })
+  })
+  describe('[team]getMinimuMemberPair', () => {
+    it('[正常系]メンバーが少ないペアが取得できる', () => {
+      const member1Pair1 = new Member(normalMember1Pair1)
+      const member2Pair1 = new Member(normalMember2Pair1)
+      const member3Pair1 = new Member(normalMember3Pair1)
+      const member1Pair2 = new Member(normalMember1Pair2)
+      const member2Pair2 = new Member(normalMember2Pair2)
+      const pair1 = new Pair({
+        ...normalPair1,
+        members: [member1Pair1, member2Pair1, member3Pair1],
+      })
+      const pair2 = new Pair({
+        ...normalPair2,
+        members: [member1Pair2, member2Pair2],
+      })
+      const team = new Team({
+        ...normalTeam,
+        pairs: [pair1, pair2],
+      })
+      expect(team.getMinimuMemberPair()).toEqual(pair2)
+    })
+  })
+  describe('[team]addPairMembers', () => {
+    it('[正常系]少ないペアにteamのメンバーが追加されている', () => {
+      const member1Pair1 = new Member(normalMember1Pair1)
+      const member2Pair1 = new Member(normalMember2Pair1)
+      const member3Pair1 = new Member(normalMember3Pair1)
+      const member1Pair2 = new Member(normalMember1Pair2)
+      const member2Pair2 = new Member(normalMember2Pair2)
+      const pair1 = new Pair({
+        ...normalPair1,
+        members: [member1Pair1, member2Pair1, member3Pair1],
+      })
+      const pair2 = new Pair({
+        ...normalPair2,
+        members: [member1Pair2, member2Pair2],
+      })
+      const team = new Team({
+        ...normalTeam,
+        pairs: [pair1, pair2],
+      })
+      const addingUserId = createRandomIdString()
+      const addingMemberId = createRandomIdString()
+      const addedMember = new Member({
+        id: addingMemberId,
+        userId: addingUserId,
+        pairId: normalPair2.id,
+      })
+      // メンバー追加された後のペア2
+      const addedPair2 = new Pair({
+        ...normalPair2,
+        members: [member1Pair2, member2Pair2, addedMember],
+      })
+      team.addPairMembers({ userId: addingUserId, memberId: addingMemberId })
+      expect(team.getAllProperties().pairs).toEqual([pair1, addedPair2])
+    })
+  })
+
+  //ここからpairのテスト
   describe('[pair]valdateName', () => {
     it('[異常系]pairの名前に半角英字以外が含まれる場合エラーを吐く', () => {
       const abnormalPair1 = {
@@ -199,6 +251,30 @@ describe('task.entity.test', () => {
           members: [member1Pair1],
         })
       }).toThrow('2名より少ないペアは存在できません。')
+    })
+  })
+  describe('[pair]addMember', () => {
+    it('[正常系]メンバーが追加されている', () => {
+      const member1Pair1 = new Member(normalMember1Pair1)
+      const member2Pair1 = new Member(normalMember2Pair1)
+      // const member3Pair1 = new Member(normalMember3Pair1)
+      const pair = new Pair({
+        ...normalPair1,
+        members: [member1Pair1, member2Pair1],
+      })
+      const addingUserId = createRandomIdString()
+      const addingMemberId = createRandomIdString()
+      const addedMember = new Member({
+        id: addingMemberId,
+        userId: addingUserId,
+        pairId: normalPair1.id,
+      })
+      pair.addMember({ userId: addingUserId, memberId: addingMemberId })
+      expect(pair.getAllProperties().members).toEqual([
+        member1Pair1,
+        member2Pair1,
+        addedMember,
+      ])
     })
   })
 })

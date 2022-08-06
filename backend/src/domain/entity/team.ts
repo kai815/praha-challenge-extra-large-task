@@ -61,7 +61,7 @@ export class Team {
   }
   public getMinimuMemberPair() {
     return this.pairs.reduce((previousValue, currentValue) =>
-      previousValue.getAllProperties().membersCount >
+      previousValue.getAllProperties().membersCount <
       currentValue.getAllProperties().membersCount
         ? previousValue
         : currentValue,
