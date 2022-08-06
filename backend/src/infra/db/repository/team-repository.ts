@@ -162,15 +162,27 @@ export class TeamRepository implements ITeamRepository {
   }
   public async findTeamByUser(userId: string): Promise<Team> {
     const gettedTeam = await this.prismaClient.team.findFirst({
+      where: {
+        TeamPair: {
+          some: {
+            pair: {
+              is: {
+                PairMember: {
+                  some: {
+                    userId: userId,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
       include: {
         TeamPair: {
           include: {
             pair: {
               include: {
-                //ちゃんとpairMemberのデータ入ってない
-                PairMember: {
-                  where: { userId },
-                },
+                PairMember: true,
               },
             },
           },
