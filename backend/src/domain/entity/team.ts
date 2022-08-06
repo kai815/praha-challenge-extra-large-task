@@ -106,6 +106,7 @@ export class Team {
   }
   public decreaseTeamMember(userId: string) {
     const belongedPair = this.getPairByUserId(userId)
+    //単純にpairのメンバーを減らすのみで間に合う場合
     if (belongedPair?.isEnableDecreaseMember()) {
       const updatedPairs = this.pairs.map((pair) => {
         const filterdMember = pair
@@ -203,6 +204,13 @@ export class Team {
       })
       .concat([newPair])
     this.pairs = updatedPairs
+  }
+  public getSamePairOtherMembers(userId: string) {
+    const belongedPair = this.getPairByUserId(userId)
+    const otherMembers = belongedPair
+      ?.getAllProperties()
+      .members.filter((member) => member.getAllProperties().userId !== userId)
+    return otherMembers
   }
 }
 
