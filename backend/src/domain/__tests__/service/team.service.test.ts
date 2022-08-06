@@ -83,7 +83,7 @@ describe('team.service.test', () => {
     })
   })
   describe('increaseTeamMember', () => {
-    it('[正常系]チームメンバーが増えているかつ人数が少ないペアで人数が増えている', async () => {
+    it('[正常系]チームメンバーが増えているかつ人数が少ないチームで人数が増えている', async () => {
       TeamRepoMock.mockImplementationOnce(() => {
         return {
           getAllTeam: async () => {
