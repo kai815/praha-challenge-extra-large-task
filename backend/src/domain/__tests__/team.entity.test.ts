@@ -43,6 +43,40 @@ const generateTeamHavingMember4Pair2 = () => {
     member2Pair2,
   }
 }
+/**
+ * team
+ * pair1 3名
+ * pair2 2名
+ */
+const generateTeamHavingMember5Pair2 = () => {
+  const member1Pair1 = new Member(normalMember1Pair1)
+  const member2Pair1 = new Member(normalMember2Pair1)
+  const member3Pair1 = new Member(normalMember3Pair1)
+  const member1Pair2 = new Member(normalMember1Pair2)
+  const member2Pair2 = new Member(normalMember2Pair2)
+  const pair1 = new Pair({
+    ...normalPair1,
+    members: [member1Pair1, member2Pair1, member3Pair1],
+  })
+  const pair2 = new Pair({
+    ...normalPair2,
+    members: [member1Pair2, member2Pair2],
+  })
+  const team = new Team({
+    ...normalTeam,
+    pairs: [pair1, pair2],
+  })
+  return {
+    team,
+    pair1,
+    pair2,
+    member1Pair1,
+    member2Pair1,
+    member3Pair1,
+    member1Pair2,
+    member2Pair2,
+  }
+}
 
 describe('task.entity.test', () => {
   describe('[team,pair,member]getAllProperties', () => {
@@ -246,6 +280,16 @@ describe('task.entity.test', () => {
   //TODOdecreaseTeamMember
   describe('[team]decreaseTeamMember', () => {
     it('[正常系]元々4名のチームが3名になっているpair1が3名になっている', () => {
+      const { team, pair1, member2Pair2 } = generateTeamHavingMember4Pair2()
+      team.decreaseTeamMember(member2Pair2.getAllProperties().userId)
+      expect(team.getTeamMemberCount()).toEqual(3)
+      expect(
+        team
+          .getPairByUserId(member2Pair2.getAllProperties().userId)
+          ?.getAllProperties().id,
+      ).toEqual(pair1.getAllProperties().id)
+    })
+    it('[正常系]元々5名のチームが3名になっているpair1が3名になっている', () => {
       const { team, pair1, member2Pair2 } = generateTeamHavingMember4Pair2()
       team.decreaseTeamMember(member2Pair2.getAllProperties().userId)
       expect(team.getTeamMemberCount()).toEqual(3)
