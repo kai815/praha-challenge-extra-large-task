@@ -33,7 +33,15 @@ const generateTeamHavingMember4Pair2 = () => {
     ...normalTeam,
     pairs: [pair1, pair2],
   })
-  return { team, pair1, pair2 }
+  return {
+    team,
+    pair1,
+    pair2,
+    member1Pair1,
+    member2Pair1,
+    member1Pair2,
+    member2Pair2,
+  }
 }
 
 describe('task.entity.test', () => {
@@ -233,6 +241,16 @@ describe('task.entity.test', () => {
     it('[正常系]メンバーが4名以上ならtrueを返す', () => {
       const { team } = generateTeamHavingMember4Pair2()
       expect(team.isEnableDecreaseTeamMember()).toEqual(true)
+    })
+  })
+  //TODOdecreaseTeamMember
+
+  describe('[team]getPairByMemberId', () => {
+    it('[正常系]userIdによりペアを取得できる', () => {
+      const { team, member1Pair1 } = generateTeamHavingMember4Pair2()
+      expect(
+        team.getMemberByUserId(member1Pair1.getAllProperties().userId),
+      ).toEqual(member1Pair1)
     })
   })
 
