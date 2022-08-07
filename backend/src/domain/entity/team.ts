@@ -127,15 +127,20 @@ export class Team {
   ///他のペアに移す処理
   private movePair(fromPair: Pair, userId: string) {
     const toPair = this.getMoveToPair(fromPair)
-    //3名未満の場合はそのペアに追加する
+    //toPairが3名未満の場合はそのペアに追加する&fromPairを削除する
     if (toPair.getAllProperties().membersCount < 3) {
       toPair.addMember({ userId, memberId: createRandomIdString() })
-      const updatedPairs = this.pairs.map((pair) => {
-        if (pair.getAllProperties().id === toPair.getAllProperties().id) {
-          return toPair
-        }
-        return pair
-      })
+      const updatedPairs = this.pairs
+        .filter(
+          (pair) =>
+            pair.getAllProperties().id !== fromPair.getAllProperties().id,
+        )
+        .map((pair) => {
+          if (pair.getAllProperties().id === toPair.getAllProperties().id) {
+            return toPair
+          }
+          return pair
+        })
       this.pairs = updatedPairs
       return
     }
@@ -144,10 +149,10 @@ export class Team {
     return
   }
   private getMoveToPair(fromPair: Pair) {
-    const otherTeams = this.pairs.filter((pair) => {
-      pair.getAllProperties().id !== fromPair.getAllProperties().id
-    })
-    const otherMinmumuMemberPair = otherTeams.reduce(
+    const otherPairs = this.pairs.filter(
+      (pair) => pair.getAllProperties().id !== fromPair.getAllProperties().id,
+    )
+    const otherMinmumuMemberPair = otherPairs.reduce(
       (previousValue, currentValue) =>
         previousValue.getAllProperties().membersCount <
         currentValue.getAllProperties().membersCount
