@@ -34,7 +34,7 @@ export class UpdateUserUseCase {
       const updatedUserId = userEntity.getAllProperties().id
       const belongedTeam = await this.teamRepo.findTeamByUser(updatedUserId)
       //チーム内での移動で収まる場合
-      if (belongedTeam.isEnableDecreaseWithinTeam(updatedUserId)) {
+      if (belongedTeam.isEnableDecreaseTeamMember()) {
         const deletingMember = belongedTeam.getMemberByUserId(updatedUserId)
         belongedTeam.decreaseTeamMember(updatedUserId)
         await this.teamRepo.save(belongedTeam)

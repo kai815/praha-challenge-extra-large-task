@@ -96,14 +96,7 @@ export class Team {
   public isEnableDecreaseTeamMember() {
     return this.getTeamMemberCount() >= 4
   }
-  //減らしてもチームメンバー内での移動で収まるか
-  public isEnableDecreaseWithinTeam(userId: string) {
-    const belongedPair = this.getPairByUserId(userId)
-    return (
-      belongedPair?.isEnableDecreaseMember() &&
-      this.isEnableDecreaseTeamMember()
-    )
-  }
+
   public decreaseTeamMember(userId: string) {
     const belongedPair = this.getPairByUserId(userId)
     //単純にpairのメンバーを減らすのみで間に合う場合
