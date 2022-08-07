@@ -11,6 +11,31 @@ import {
   normalMember2Pair2,
 } from '../../../testUtil/team-data-factory'
 
+/**
+ * team
+ * pair1 2名
+ * pair2 2名
+ */
+const generateTeamHavingMember4Pair2 = () => {
+  const member1Pair1 = new Member(normalMember1Pair1)
+  const member2Pair1 = new Member(normalMember2Pair1)
+  const member1Pair2 = new Member(normalMember1Pair2)
+  const member2Pair2 = new Member(normalMember2Pair2)
+  const pair1 = new Pair({
+    ...normalPair1,
+    members: [member1Pair1, member2Pair1],
+  })
+  const pair2 = new Pair({
+    ...normalPair2,
+    members: [member1Pair2, member2Pair2],
+  })
+  const team = new Team({
+    ...normalTeam,
+    pairs: [pair1, pair2],
+  })
+  return { team, pair1, pair2 }
+}
+
 describe('task.entity.test', () => {
   describe('[team,pair,member]getAllProperties', () => {
     it('[正常系]team,pair,memberの作成したインスタンスのプロパティが全て取れる', () => {
@@ -216,6 +241,13 @@ describe('task.entity.test', () => {
         pairs: [pair1, pair2],
       })
       expect(team.getPairByUserId(normalMember1Pair1.userId)).toEqual(pair1)
+    })
+  })
+
+  describe('[team]isEnableDecreaseTeamMember', () => {
+    it('[正常系]メンバーが4名以上ならtrueを返す', () => {
+      const { team } = generateTeamHavingMember4Pair2()
+      expect(team.isEnableDecreaseTeamMember()).toEqual(true)
     })
   })
 
