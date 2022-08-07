@@ -244,6 +244,18 @@ describe('task.entity.test', () => {
     })
   })
   //TODOdecreaseTeamMember
+  describe('[team]decreaseTeamMember', () => {
+    it('[正常系]元々4名のチームが3名になっているpair1が3名になっている', () => {
+      const { team, pair1, member2Pair2 } = generateTeamHavingMember4Pair2()
+      team.decreaseTeamMember(member2Pair2.getAllProperties().userId)
+      expect(team.getTeamMemberCount()).toEqual(3)
+      expect(
+        team
+          .getPairByUserId(member2Pair2.getAllProperties().userId)
+          ?.getAllProperties().id,
+      ).toEqual(pair1.getAllProperties().id)
+    })
+  })
 
   describe('[team]getPairByMemberId', () => {
     it('[正常系]userIdによりペアを取得できる', () => {
