@@ -53,8 +53,9 @@ export class UpdateUserUseCase {
       })
       await otherMembers?.map(async (member) => {
         //チームメンバーに追加
-        const addedTeam = await this.teamService.increaseTeamMember(
+        const addedTeam = await this.teamService.moveToOtherTeam(
           member.getAllProperties().userId,
+          belongedTeam.getAllProperties().id,
         )
         await this.teamRepo.save(addedTeam)
       })

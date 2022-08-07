@@ -43,11 +43,35 @@ export class TeamService {
       pairs: minimumMemberTeam?.getAllProperties().pairs,
     })
   }
-  // public async decreaseTeamMember(userId: string): Promise<void | Member> {
-  //   const belongedTeam = await this.teamRepo.findTeamByUser(userId)
-  //   const belongedPair = belongedTeam.getPairByUserId(userId)
-  //   if (belongedPair?.isEnableDecreaseMember()) {
-  //     return belongedPair.getMemberByUserId(userId)
-  //   }
-  // }
+
+  // 他チームで一番メンバーが少ないチームを取得
+  public async getOtherMinimuMemberTeam(teamId: string) {
+    const allTeams = await this.teamRepo.getAllTeam()
+    const minimumMemberOtherTeam = allTeams
+      .filter((team) => team.getAllProperties().id !== teamId)
+      .reduce((previousValue, currentValue) =>
+        //同じの場合はpreviousを大きいとする
+        previousValue.getTeamMemberCount > currentValue.getTeamMemberCount
+          ? previousValue
+          : currentValue,
+      )
+    return minimumMemberOtherTeam
+  }
+
+  public async moveToOtherTeam(userId: string, teamId: string) {
+    const minimumMemberOtherTeam = await this.getOtherMinimuMemberTeam(teamId)
+    if (!minimumMemberOtherTeam) {
+      throw new Error('最小のチームが存在しません')
+    }
+    const memberId = createRandomIdString()
+    minimumMemberOtherTeam.addPairMembers({
+      userId: userId,
+      memberId: memberId,
+    })
+    return new Team({
+      id: minimumMemberOtherTeam?.getAllProperties().id,
+      name: minimumMemberOtherTeam?.getAllProperties().name,
+      pairs: minimumMemberOtherTeam?.getAllProperties().pairs,
+    })
+  }
 }
