@@ -147,8 +147,9 @@ export class Team {
       this.pairs = updatedPairs
       return
     }
-    //ペアを分割する
-    this.splitPair(toPair, userId)
+    //toPairが3名以上の場合はtoPairのメンバーをfromPairに移動する
+    //TODOメソッド名修正したほうがいいかも
+    this.splitPair(toPair, fromPair, userId)
     return
   }
   private getMoveToPair(fromPair: Pair) {
@@ -164,7 +165,7 @@ export class Team {
     )
     return otherMinmumuMemberPair
   }
-  private splitPair(toPair: Pair, userId: string) {
+  private splitPair(toPair: Pair, fromPair: Pair, userId: string) {
     //仕様的に特に条件はないので、最後のmemberを新しいペアに追加するためにこのペアから抜く
     const splitedToPairMember = toPair
       .getAllProperties()
@@ -176,34 +177,31 @@ export class Team {
       members: splitedToPairMember,
     })
     const splitingMember = toPair.getAllProperties().members[2]!
-    const newPairId = createRandomIdString()
-    const newPairMember1 = new Member({
+    const updateFromPairMember1 = new Member({
       id: splitingMember.getAllProperties().id,
       userId: splitingMember.getAllProperties().userId,
-      pairId: newPairId,
+      pairId: fromPair.getAllProperties().id,
     })
-    const newPairMember2 = new Member({
+    const updateFromPairMember2 = new Member({
       id: createRandomIdString(),
-      pairId: newPairId,
+      pairId: fromPair.getAllProperties().id,
       userId: userId,
     })
-    const newPair = new Pair({
-      id: newPairId,
-      //TODO名前は仮
-      name: `${toPair.getAllProperties().name}a`,
+    const updateFromPair = new Pair({
+      id: fromPair.getAllProperties().id,
+      name: fromPair.getAllProperties().id,
       teamPairId: createRandomIdString(),
-      members: [newPairMember1, newPairMember2],
+      members: [updateFromPairMember1, updateFromPairMember2],
     })
-    const updatedPairs = this.pairs
-      .map((pair) => {
-        if (
-          pair.getAllProperties().id === splitedToPair.getAllProperties().id
-        ) {
-          return splitedToPair
-        }
-        return pair
-      })
-      .concat([newPair])
+    const updatedPairs = this.pairs.map((pair) => {
+      if (pair.getAllProperties().id === splitedToPair.getAllProperties().id) {
+        return splitedToPair
+      }
+      if (pair.getAllProperties().id === updateFromPair.getAllProperties().id) {
+        return updateFromPair
+      }
+      return pair
+    })
     this.pairs = updatedPairs
   }
   public getSamePairOtherMembers(userId: string) {
