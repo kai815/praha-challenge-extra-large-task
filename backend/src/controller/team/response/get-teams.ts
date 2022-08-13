@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { TeamDTO } from 'src/app/query-service-interface/team-qs'
+import { TeamDTO, PairDTO } from 'src/app/query-service-interface/team-qs'
 
 export class GetTeamDataResponse {
   @ApiProperty({ type: () => [TeamDTO] })
@@ -7,11 +7,11 @@ export class GetTeamDataResponse {
 
   public constructor(params: { teamData: TeamDTO[] }) {
     const { teamData } = params
-    this.teamData = teamData.map(({ id, name }) => {
+    this.teamData = teamData.map(({ id, name, pairs }) => {
       return new Team({
         id,
         name,
-        // pairs,
+        pairs,
       })
     })
   }
@@ -24,12 +24,12 @@ class Team {
   @ApiProperty()
   name: string
 
-  // @ApiProperty()
-  // pairs: string[]
+  @ApiProperty()
+  pairs: PairDTO[]
 
-  public constructor(params: { id: string; name: string }) {
+  public constructor(params: { id: string; name: string; pairs: PairDTO[] }) {
     this.id = params.id
     this.name = params.name
-    // this.pairs = params.pairs
+    this.pairs = params.pairs
   }
 }
