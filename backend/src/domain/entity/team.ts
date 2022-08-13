@@ -149,7 +149,7 @@ export class Team {
     }
     //toPairが3名以上の場合はtoPairのメンバーをfromPairに移動する
     //TODOメソッド名修正したほうがいいかも
-    this.splitPair(toPair, fromPair, userId)
+    this.flattenPair(toPair, fromPair, userId)
     return
   }
   private getMoveToPair(fromPair: Pair) {
@@ -165,7 +165,7 @@ export class Team {
     )
     return otherMinmumuMemberPair
   }
-  private splitPair(toPair: Pair, fromPair: Pair, userId: string) {
+  private flattenPair(toPair: Pair, fromPair: Pair, userId: string) {
     //仕様的に特に条件はないので、最後のmemberを新しいペアに追加するためにこのペアから抜く
     const splitedToPairMember = toPair
       .getAllProperties()
