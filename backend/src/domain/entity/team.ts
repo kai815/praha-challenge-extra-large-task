@@ -1,5 +1,6 @@
 import { User } from './user'
 import { Status } from './zaiseki-status'
+import { createRandomIdString } from 'src/util/random'
 
 export class Team {
   private id: string
@@ -67,7 +68,7 @@ export class Team {
         : currentValue,
     )
   }
-  public addPairMembers(newMemberInfo: { userId: string; memberId: string }) {
+  public addPairMember(newMemberInfo: { userId: string; memberId: string }) {
     const minmumuMemberPair = this.getMinimuMemberPair()
     minmumuMemberPair.addMember(newMemberInfo)
     const updatedPairs = this.pairs.map((pair) => {
@@ -79,6 +80,136 @@ export class Team {
       return pair
     })
     this.pairs = updatedPairs
+  }
+  public getPairByUserId(userId: string) {
+    const belogedPair = this.pairs.filter((pair) => {
+      let result = false
+      pair.getAllProperties().members.forEach((member) => {
+        if (member.getAllProperties().userId === userId) {
+          result = true
+        }
+      })
+      return result
+    })
+    return belogedPair[0]
+  }
+  public isEnableDecreaseTeamMember() {
+    return this.getTeamMemberCount() >= 4
+  }
+
+  public decreaseTeamMember(userId: string) {
+    const belongedPair = this.getPairByUserId(userId)
+    //単純にpairのメンバーを減らすのみで間に合う場合
+    if (belongedPair?.isEnableDecreaseMember()) {
+      const updatedPairs = this.pairs.map((pair) => {
+        if (belongedPair.getAllProperties().id === pair.getAllProperties().id) {
+          const filterdMember = pair
+            .getAllProperties()
+            .members.filter(
+              (member) => member.getAllProperties().userId !== userId,
+            )
+          return new Pair({
+            id: pair.getAllProperties().id,
+            name: pair.getAllProperties().name,
+            teamPairId: pair.getAllProperties().teamPairId,
+            members: filterdMember,
+          })
+        }
+        return pair
+      })
+      this.pairs = updatedPairs
+      return
+    }
+    //他のペアに移す処理をかく
+    this.movePair(belongedPair!, userId)
+  }
+  public getMemberByUserId(userId: string) {
+    const belongedPair = this.getPairByUserId(userId)
+    return belongedPair?.getMemberByUserId(userId)
+  }
+  ///他のペアに移す処理
+  private movePair(fromPair: Pair, userId: string) {
+    const toPair = this.getMoveToPair(fromPair)
+    //toPairが3名未満の場合はそのペアに追加する&fromPairを削除する
+    if (toPair.getAllProperties().membersCount < 3) {
+      toPair.addMember({ userId, memberId: createRandomIdString() })
+      const updatedPairs = this.pairs
+        .filter(
+          (pair) =>
+            pair.getAllProperties().id !== fromPair.getAllProperties().id,
+        )
+        .map((pair) => {
+          if (pair.getAllProperties().id === toPair.getAllProperties().id) {
+            return toPair
+          }
+          return pair
+        })
+      this.pairs = updatedPairs
+      return
+    }
+    //toPairが3名以上の場合はtoPairのメンバーをfromPairに移動する
+    //TODOメソッド名修正したほうがいいかも
+    this.flattenPair(toPair, fromPair, userId)
+    return
+  }
+  private getMoveToPair(fromPair: Pair) {
+    const otherPairs = this.pairs.filter(
+      (pair) => pair.getAllProperties().id !== fromPair.getAllProperties().id,
+    )
+    const otherMinmumuMemberPair = otherPairs.reduce(
+      (previousValue, currentValue) =>
+        previousValue.getAllProperties().membersCount <
+        currentValue.getAllProperties().membersCount
+          ? previousValue
+          : currentValue,
+    )
+    return otherMinmumuMemberPair
+  }
+  private flattenPair(toPair: Pair, fromPair: Pair, userId: string) {
+    //仕様的に特に条件はないので、最後のmemberを新しいペアに追加するためにこのペアから抜く
+    const splitedToPairMember = toPair
+      .getAllProperties()
+      .members.filter((_member, index) => index !== 2)
+    const splitedToPair = new Pair({
+      id: toPair.getAllProperties().id,
+      name: toPair.getAllProperties().name,
+      teamPairId: toPair.getAllProperties().teamPairId,
+      members: splitedToPairMember,
+    })
+    const splitingMember = toPair.getAllProperties().members[2]!
+    const updateFromPairMember1 = new Member({
+      id: splitingMember.getAllProperties().id,
+      userId: splitingMember.getAllProperties().userId,
+      pairId: fromPair.getAllProperties().id,
+    })
+    const updateFromPairMember2 = new Member({
+      id: createRandomIdString(),
+      pairId: fromPair.getAllProperties().id,
+      userId: userId,
+    })
+    const updateFromPair = new Pair({
+      id: fromPair.getAllProperties().id,
+      name: fromPair.getAllProperties().id,
+      teamPairId: createRandomIdString(),
+      members: [updateFromPairMember1, updateFromPairMember2],
+    })
+    const updatedPairs = this.pairs.map((pair) => {
+      if (pair.getAllProperties().id === splitedToPair.getAllProperties().id) {
+        return splitedToPair
+      }
+      if (pair.getAllProperties().id === updateFromPair.getAllProperties().id) {
+        return updateFromPair
+      }
+      return pair
+    })
+    this.pairs = updatedPairs
+  }
+  public getSamePairOtherMembers(userId: string) {
+    const belongedPair = this.getPairByUserId(userId)
+    const otherMembers = belongedPair
+      ?.getAllProperties()
+      .members.filter((member) => member.getAllProperties().userId !== userId)
+    return otherMembers
   }
 }
 
@@ -157,6 +288,15 @@ export class Pair {
     }
     this.members = addedMembers
     this.membersCount = this.members.length
+  }
+  public isEnableDecreaseMember() {
+    return this.membersCount >= 3
+  }
+  public getMemberByUserId(userId: string) {
+    const removingMember = this.members.filter(
+      (member) => member.getAllProperties().userId === userId,
+    )
+    return removingMember[0]
   }
 }
 

@@ -160,4 +160,69 @@ export class TeamRepository implements ITeamRepository {
     })
     return allTeamEntity
   }
+  public async findTeamByUser(userId: string): Promise<Team> {
+    const gettedTeam = await this.prismaClient.team.findFirst({
+      where: {
+        TeamPair: {
+          some: {
+            pair: {
+              is: {
+                PairMember: {
+                  some: {
+                    userId: userId,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      include: {
+        TeamPair: {
+          include: {
+            pair: {
+              include: {
+                PairMember: true,
+              },
+            },
+          },
+        },
+      },
+    })
+    console.log({ gettedTeam })
+    if (!gettedTeam) {
+      throw new Error('所属するチームが見つかりませんでした')
+    }
+    const pairs = await Promise.all(
+      gettedTeam.TeamPair.map(async (teamPair) => {
+        //ちゃんとpairMemberのデータ入ってないので再度取得
+        const gettedPairMembers = await this.prismaClient.pairMember.findMany({
+          where: {
+            pairId: teamPair.pairId,
+          },
+        })
+        const members = gettedPairMembers.map((pairMember) => {
+          return new Member({
+            id: pairMember.id,
+            pairId: pairMember.pairId,
+            userId: pairMember.userId,
+          })
+        })
+        return new Pair({
+          id: teamPair.pairId,
+          name: teamPair.pair.name,
+          members: members,
+          teamPairId: teamPair.id,
+        })
+      }),
+    )
+    return new Team({ id: gettedTeam.id, name: gettedTeam.name, pairs })
+  }
+  public async deleteMember(member: Member) {
+    await this.prismaClient.pairMember.delete({
+      where: {
+        id: member.getAllProperties().id,
+      },
+    })
+  }
 }

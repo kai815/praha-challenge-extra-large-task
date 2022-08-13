@@ -86,7 +86,9 @@ export class UserController {
     const prisma = new PrismaClient()
     const repo = new UserRepository(prisma)
     const factory = new UserFactory(repo)
-    const usecase = new UpdateUserUseCase(repo, factory)
+    const teamRepo = new TeamRepository(prisma)
+    const teamService = new TeamService(teamRepo)
+    const usecase = new UpdateUserUseCase(repo, factory, teamRepo, teamService)
     await usecase.do({
       id,
       name: updateUserDto.name,

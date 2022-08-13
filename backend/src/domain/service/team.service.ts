@@ -1,5 +1,5 @@
 import { ITeamRepository } from 'src/app/repository-interface/team-repository-interface'
-import { Team, Pair } from 'src/domain/entity/team'
+import { Team, Pair, Member } from 'src/domain/entity/team'
 import { createRandomIdString } from 'src/util/random'
 
 export class TeamService {
@@ -33,7 +33,7 @@ export class TeamService {
       throw new Error('最小のチームが存在しません')
     }
     const memberId = createRandomIdString()
-    minimumMemberTeam.addPairMembers({
+    minimumMemberTeam.addPairMember({
       userId: userId,
       memberId: memberId,
     })
@@ -41,6 +41,37 @@ export class TeamService {
       id: minimumMemberTeam?.getAllProperties().id,
       name: minimumMemberTeam?.getAllProperties().name,
       pairs: minimumMemberTeam?.getAllProperties().pairs,
+    })
+  }
+
+  // 他チームで一番メンバーが少ないチームを取得
+  public async getOtherMinimuMemberTeam(teamId: string) {
+    const allTeams = await this.teamRepo.getAllTeam()
+    const minimumMemberOtherTeam = allTeams
+      .filter((team) => team.getAllProperties().id !== teamId)
+      .reduce((previousValue, currentValue) =>
+        //同じの場合はpreviousを大きいとする
+        previousValue.getTeamMemberCount > currentValue.getTeamMemberCount
+          ? previousValue
+          : currentValue,
+      )
+    return minimumMemberOtherTeam
+  }
+
+  public async moveToOtherTeam(userId: string, teamId: string) {
+    const minimumMemberOtherTeam = await this.getOtherMinimuMemberTeam(teamId)
+    if (!minimumMemberOtherTeam) {
+      throw new Error('最小のチームが存在しません')
+    }
+    const memberId = createRandomIdString()
+    minimumMemberOtherTeam.addPairMember({
+      userId: userId,
+      memberId: memberId,
+    })
+    return new Team({
+      id: minimumMemberOtherTeam?.getAllProperties().id,
+      name: minimumMemberOtherTeam?.getAllProperties().name,
+      pairs: minimumMemberOtherTeam?.getAllProperties().pairs,
     })
   }
 }

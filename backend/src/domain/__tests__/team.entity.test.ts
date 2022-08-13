@@ -11,6 +11,73 @@ import {
   normalMember2Pair2,
 } from '../../../testUtil/team-data-factory'
 
+/**
+ * team
+ * pair1 2名
+ * pair2 2名
+ */
+const generateTeamHavingMember4Pair2 = () => {
+  const member1Pair1 = new Member(normalMember1Pair1)
+  const member2Pair1 = new Member(normalMember2Pair1)
+  const member1Pair2 = new Member(normalMember1Pair2)
+  const member2Pair2 = new Member(normalMember2Pair2)
+  const pair1 = new Pair({
+    ...normalPair1,
+    members: [member1Pair1, member2Pair1],
+  })
+  const pair2 = new Pair({
+    ...normalPair2,
+    members: [member1Pair2, member2Pair2],
+  })
+  const team = new Team({
+    ...normalTeam,
+    pairs: [pair1, pair2],
+  })
+  return {
+    team,
+    pair1,
+    pair2,
+    member1Pair1,
+    member2Pair1,
+    member1Pair2,
+    member2Pair2,
+  }
+}
+/**
+ * team
+ * pair1 3名
+ * pair2 2名
+ */
+const generateTeamHavingMember5Pair2 = () => {
+  const member1Pair1 = new Member(normalMember1Pair1)
+  const member2Pair1 = new Member(normalMember2Pair1)
+  const member3Pair1 = new Member(normalMember3Pair1)
+  const member1Pair2 = new Member(normalMember1Pair2)
+  const member2Pair2 = new Member(normalMember2Pair2)
+  const pair1 = new Pair({
+    ...normalPair1,
+    members: [member1Pair1, member2Pair1, member3Pair1],
+  })
+  const pair2 = new Pair({
+    ...normalPair2,
+    members: [member1Pair2, member2Pair2],
+  })
+  const team = new Team({
+    ...normalTeam,
+    pairs: [pair1, pair2],
+  })
+  return {
+    team,
+    pair1,
+    pair2,
+    member1Pair1,
+    member2Pair1,
+    member3Pair1,
+    member1Pair2,
+    member2Pair2,
+  }
+}
+
 describe('task.entity.test', () => {
   describe('[team,pair,member]getAllProperties', () => {
     it('[正常系]team,pair,memberの作成したインスタンスのプロパティが全て取れる', () => {
@@ -120,66 +187,24 @@ describe('task.entity.test', () => {
   })
   describe('[team]getTeamMemberCount', () => {
     it('[正常系]メンバーの人数が取得できる', () => {
-      const member1Pair1 = new Member(normalMember1Pair1)
-      const member2Pair1 = new Member(normalMember2Pair1)
-      const member1Pair2 = new Member(normalMember1Pair2)
-      const member2Pair2 = new Member(normalMember2Pair2)
-      const pair1 = new Pair({
-        ...normalPair1,
-        members: [member1Pair1, member2Pair1],
-      })
-      const pair2 = new Pair({
-        ...normalPair2,
-        members: [member1Pair2, member2Pair2],
-      })
-      const team = new Team({
-        ...normalTeam,
-        pairs: [pair1, pair2],
-      })
+      const { team } = generateTeamHavingMember4Pair2()
       expect(team.getTeamMemberCount()).toEqual(4)
     })
   })
   describe('[team]getMinimuMemberPair', () => {
     it('[正常系]メンバーが少ないペアが取得できる', () => {
-      const member1Pair1 = new Member(normalMember1Pair1)
-      const member2Pair1 = new Member(normalMember2Pair1)
-      const member3Pair1 = new Member(normalMember3Pair1)
-      const member1Pair2 = new Member(normalMember1Pair2)
-      const member2Pair2 = new Member(normalMember2Pair2)
-      const pair1 = new Pair({
-        ...normalPair1,
-        members: [member1Pair1, member2Pair1, member3Pair1],
-      })
-      const pair2 = new Pair({
-        ...normalPair2,
-        members: [member1Pair2, member2Pair2],
-      })
-      const team = new Team({
-        ...normalTeam,
-        pairs: [pair1, pair2],
-      })
+      const { team, pair2 } = generateTeamHavingMember5Pair2()
       expect(team.getMinimuMemberPair()).toEqual(pair2)
     })
   })
-  describe('[team]addPairMembers', () => {
+  describe('[team]addPairMember', () => {
     it('[正常系]少ないペアにteamのメンバーが追加されている', () => {
-      const member1Pair1 = new Member(normalMember1Pair1)
-      const member2Pair1 = new Member(normalMember2Pair1)
-      const member3Pair1 = new Member(normalMember3Pair1)
-      const member1Pair2 = new Member(normalMember1Pair2)
-      const member2Pair2 = new Member(normalMember2Pair2)
-      const pair1 = new Pair({
-        ...normalPair1,
-        members: [member1Pair1, member2Pair1, member3Pair1],
-      })
-      const pair2 = new Pair({
-        ...normalPair2,
-        members: [member1Pair2, member2Pair2],
-      })
-      const team = new Team({
-        ...normalTeam,
-        pairs: [pair1, pair2],
-      })
+      const {
+        team,
+        pair1,
+        member1Pair2,
+        member2Pair2,
+      } = generateTeamHavingMember5Pair2()
       const addingUserId = createRandomIdString()
       const addingMemberId = createRandomIdString()
       const addedMember = new Member({
@@ -192,8 +217,73 @@ describe('task.entity.test', () => {
         ...normalPair2,
         members: [member1Pair2, member2Pair2, addedMember],
       })
-      team.addPairMembers({ userId: addingUserId, memberId: addingMemberId })
+      team.addPairMember({ userId: addingUserId, memberId: addingMemberId })
       expect(team.getAllProperties().pairs).toEqual([pair1, addedPair2])
+    })
+  })
+  describe('[team]getPairByUserId', () => {
+    it('[正常系]ユーザーIDによりペアを取得できる', () => {
+      const { team, pair1 } = generateTeamHavingMember5Pair2()
+      expect(team.getPairByUserId(normalMember1Pair1.userId)).toEqual(pair1)
+    })
+  })
+
+  describe('[team]isEnableDecreaseTeamMember', () => {
+    it('[正常系]メンバーが4名以上ならtrueを返す', () => {
+      const { team } = generateTeamHavingMember4Pair2()
+      expect(team.isEnableDecreaseTeamMember()).toEqual(true)
+    })
+  })
+
+  describe('[team]decreaseTeamMember', () => {
+    it('[正常系]4名チームの2名ペアのユーザーが減る。元々4名のチームが3名になっているpair1が3名になっている', () => {
+      const { team, pair1, member2Pair2 } = generateTeamHavingMember4Pair2()
+      team.decreaseTeamMember(member2Pair2.getAllProperties().userId)
+      expect(team.getTeamMemberCount()).toEqual(3)
+      expect(
+        team
+          .getPairByUserId(member2Pair2.getAllProperties().userId)
+          ?.getAllProperties().id,
+      ).toEqual(pair1.getAllProperties().id)
+    })
+    it('[正常系]5名チームの3名のペアに所属するユーザーが減る。元々5名のチームが4名になっている3名だったpair1が2名になっている', () => {
+      const {
+        team,
+        member1Pair1,
+        member2Pair1,
+      } = generateTeamHavingMember5Pair2()
+      team.decreaseTeamMember(member1Pair1.getAllProperties().userId)
+      expect(team.getTeamMemberCount()).toEqual(4)
+      const updatedPair1 = team.getPairByUserId(
+        member2Pair1.getAllProperties().userId,
+      )
+      expect(updatedPair1?.getAllProperties().membersCount).toEqual(2)
+    })
+    it('[正常系]5名チームの2名のペアに所属するユーザーが減る。元々5名のチームが4名になっているpair1の3名の1人がpair2になっている', () => {
+      const {
+        team,
+        member1Pair1,
+        member2Pair2,
+      } = generateTeamHavingMember5Pair2()
+      team.decreaseTeamMember(member2Pair2.getAllProperties().userId)
+      expect(team.getTeamMemberCount()).toEqual(4)
+      const updatedPair1 = team.getPairByUserId(
+        member1Pair1.getAllProperties().userId,
+      )
+      const updatedPair2 = team.getPairByUserId(
+        member1Pair1.getAllProperties().userId,
+      )
+      expect(updatedPair1?.getAllProperties().membersCount).toEqual(2)
+      expect(updatedPair2?.getAllProperties().membersCount).toEqual(2)
+    })
+  })
+
+  describe('[team]getPairByMemberId', () => {
+    it('[正常系]userIdによりペアを取得できる', () => {
+      const { team, member1Pair1 } = generateTeamHavingMember4Pair2()
+      expect(
+        team.getMemberByUserId(member1Pair1.getAllProperties().userId),
+      ).toEqual(member1Pair1)
     })
   })
 
@@ -275,6 +365,18 @@ describe('task.entity.test', () => {
         member2Pair1,
         addedMember,
       ])
+    })
+  })
+  describe('[pair]isEnableDecreaseMember', () => {
+    it('[正常系]メンバーが3名以上ならtrue', () => {
+      const member1Pair1 = new Member(normalMember1Pair1)
+      const member2Pair1 = new Member(normalMember2Pair1)
+      const member3Pair1 = new Member(normalMember3Pair1)
+      const pair = new Pair({
+        ...normalPair1,
+        members: [member1Pair1, member2Pair1, member3Pair1],
+      })
+      expect(pair.isEnableDecreaseMember()).toEqual(true)
     })
   })
 })
