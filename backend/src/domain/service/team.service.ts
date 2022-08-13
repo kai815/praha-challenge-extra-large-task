@@ -33,7 +33,7 @@ export class TeamService {
       throw new Error('最小のチームが存在しません')
     }
     const memberId = createRandomIdString()
-    minimumMemberTeam.addPairMembers({
+    minimumMemberTeam.addPairMember({
       userId: userId,
       memberId: memberId,
     })
@@ -64,7 +64,7 @@ export class TeamService {
       throw new Error('最小のチームが存在しません')
     }
     const memberId = createRandomIdString()
-    minimumMemberOtherTeam.addPairMembers({
+    minimumMemberOtherTeam.addPairMember({
       userId: userId,
       memberId: memberId,
     })

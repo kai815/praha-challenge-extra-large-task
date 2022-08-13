@@ -68,7 +68,7 @@ export class Team {
         : currentValue,
     )
   }
-  public addPairMembers(newMemberInfo: { userId: string; memberId: string }) {
+  public addPairMember(newMemberInfo: { userId: string; memberId: string }) {
     const minmumuMemberPair = this.getMinimuMemberPair()
     minmumuMemberPair.addMember(newMemberInfo)
     const updatedPairs = this.pairs.map((pair) => {

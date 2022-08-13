@@ -197,7 +197,7 @@ describe('task.entity.test', () => {
       expect(team.getMinimuMemberPair()).toEqual(pair2)
     })
   })
-  describe('[team]addPairMembers', () => {
+  describe('[team]addPairMember', () => {
     it('[正常系]少ないペアにteamのメンバーが追加されている', () => {
       const {
         team,
@@ -217,7 +217,7 @@ describe('task.entity.test', () => {
         ...normalPair2,
         members: [member1Pair2, member2Pair2, addedMember],
       })
-      team.addPairMembers({ userId: addingUserId, memberId: addingMemberId })
+      team.addPairMember({ userId: addingUserId, memberId: addingMemberId })
       expect(team.getAllProperties().pairs).toEqual([pair1, addedPair2])
     })
   })
