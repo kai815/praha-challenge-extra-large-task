@@ -6,6 +6,9 @@ export class UpdateTeamUseCase {
     this.teamRepo = teamRepo
   }
   public async do(params: { id: string; pairIds: string[] }) {
+    //送ってきたidのチームを更新する
+    //リクエストに含まれるpairIdsがそのままチームのもつpairになる
+    //元々いたが、リクエストに含まれないペアは移動する
     return
   }
 }
