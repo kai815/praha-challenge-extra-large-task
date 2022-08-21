@@ -9,6 +9,8 @@ export class UpdateTeamUseCase {
     //送ってきたidのチームを更新する
     //リクエストに含まれるpairIdsがそのままチームのもつpairになる
     //元々いたが、リクエストに含まれないペアは移動する
+    const team = await this.teamRepo.findById(params.id)
+    const outingPairs = team.getOutingPairs(params.pairIds)
     return
   }
 }
