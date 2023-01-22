@@ -16,7 +16,7 @@ jest.mock('src/domain/factory/user.factory')
 jest.mock('src/infra/db/repository/user-task-repository')
 jest.mock('src/domain/factory/user-task.factory')
 jest.mock('src/infra/db/query-service/task-qs')
-jest.mock('src/infra/db/query-service/team-repository')
+jest.mock('src/infra/db/query-service/team-qs')
 jest.mock('src/domain/service/team.service')
 
 describe('do', () => {
