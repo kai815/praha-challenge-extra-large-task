@@ -261,30 +261,30 @@ describe('task.entity.test', () => {
     })
 
     //TODOあとで直す
-  //   it('[正常系]5名チームの2名のペアに所属するユーザーが減る。元々5名のチームが4名になっているpair1の3名の1人がpair2になっている', () => {
-  //     const {
-  //       team,
-  //       member1Pair1,
-  //       member2Pair2,
-  //     } = generateTeamHavingMember5Pair2()
-  //     console.log({ team })
-  //     console.log(team.getAllProperties().pairs)
-  //     console.log({ member1Pair1 })
-  //     console.log({ member2Pair2 })
-  //     team.decreaseTeamMember(member2Pair2.getAllProperties().userId)
-  //     expect(team.getTeamMemberCount()).toEqual(4)
-  //     const updatedPair1 = team.getPairByUserId(
-  //       member1Pair1.getAllProperties().userId,
-  //     )
-  //     console.log({ updatedPair1 })
-  //     const updatedPair2 = team.getPairByUserId(
-  //       member1Pair1.getAllProperties().userId,
-  //     )
-  //     console.log({ updatedPair2 })
-  //     expect(updatedPair1?.getAllProperties().membersCount).toEqual(2)
-  //     expect(updatedPair2?.getAllProperties().membersCount).toEqual(2)
-  //   })
-  // })
+    // it('[正常系]5名チームの2名のペアに所属するユーザーが減る。元々5名のチームが4名になっているpair1の3名の1人がpair2になっている', () => {
+    //   const {
+    //     team,
+    //     member1Pair1,
+    //     member2Pair2,
+    //   } = generateTeamHavingMember5Pair2()
+    //   console.log({ team })
+    //   console.log(team.getAllProperties().pairs)
+    //   console.log({ member1Pair1 })
+    //   console.log({ member2Pair2 })
+    //   team.decreaseTeamMember(member2Pair2.getAllProperties().userId)
+    //   expect(team.getTeamMemberCount()).toEqual(4)
+    //   const updatedPair1 = team.getPairByUserId(
+    //     member1Pair1.getAllProperties().userId,
+    //   )
+    //   console.log({ updatedPair1 })
+    //   const updatedPair2 = team.getPairByUserId(
+    //     member1Pair1.getAllProperties().userId,
+    //   )
+    //   console.log({ updatedPair2 })
+    //   expect(updatedPair1?.getAllProperties().membersCount).toEqual(2)
+    //   expect(updatedPair2?.getAllProperties().membersCount).toEqual(2)
+    // })
+  })
 
   describe('[team]getPairByMemberId', () => {
     it('[正常系]userIdによりペアを取得できる', () => {
