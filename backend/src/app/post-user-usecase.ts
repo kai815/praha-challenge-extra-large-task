@@ -39,13 +39,13 @@ export class PostUserUseCase {
     await this.userRepo.save(userEntity)
     //全てのタスクのユーザータスクの作成
     const allTasks = await this.taskQS.getAll()
-    await allTasks?.map(async (task) => {
+    allTasks?.map(async (task) => {
       const userTask = await this.userTaskFac.create({
         kind: 'Insert',
         userId: userEntity.getAllProperties().id,
         taskId: task.id,
       })
-      this.userTaskRepo.save(userTask)
+      await this.userTaskRepo.save(userTask)
     })
     //チームメンバーに追加
     const addedTeam = await this.teamService.increaseTeamMember(
