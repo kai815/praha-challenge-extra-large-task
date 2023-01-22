@@ -18,6 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
+        with:
+          node-version: '14'
       - run: yarn
       - run: yarn test:unit
   integration_test:
@@ -43,5 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
+        with:
+          node-version: '14'
       - run: yarn
       - run: yarn test:integration
