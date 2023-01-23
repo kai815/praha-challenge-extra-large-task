@@ -1,4 +1,4 @@
-import { Team, Pair, Member } from 'src/domain/entity/Team'
+import { Team, Pair, Member } from 'src/domain/entity/team'
 import { createRandomIdString } from 'src/util/random'
 import {
   normalPair1,

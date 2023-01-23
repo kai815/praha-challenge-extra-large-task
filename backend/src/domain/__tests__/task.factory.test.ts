@@ -1,4 +1,4 @@
-import { Task } from 'src/domain/entity/Task'
+import { Task } from 'src/domain/entity/task'
 import { TaskFactory } from 'src/domain/factory/task.factory'
 import { TaskRepository } from 'src/infra/db/repository/task-repository'
 
