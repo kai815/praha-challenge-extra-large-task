@@ -1,4 +1,4 @@
-import { Task } from 'src/domain/entity/Task'
+import { Task } from 'src/domain/entity/task'
 
 export interface ITaskRepository {
   save(task: Task): Promise<Task>

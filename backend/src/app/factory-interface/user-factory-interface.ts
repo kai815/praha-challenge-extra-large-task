@@ -1,4 +1,4 @@
-import { User } from 'src/domain/entity/User'
+import { User } from 'src/domain/entity/user'
 import { Status } from 'src/domain/entity/zaiseki-status'
 
 //TODO idがなかったらnameとemailは必須という型にできるならしたい
