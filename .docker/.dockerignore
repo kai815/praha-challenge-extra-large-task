@@ -1,0 +1,13 @@
+/backend/Dockerfile
+docker-compose.yml
+.dockerignore
+
+../backend/README.md
+../backend/node_modules/
+../backend/npm-debug.log
+../backend/dist/
+
+../README.md
+../modeling
+../.git
+../.idea
