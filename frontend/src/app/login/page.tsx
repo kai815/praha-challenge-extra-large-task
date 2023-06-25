@@ -1,9 +1,12 @@
-'use client'
+ 'use client'
+
+import { login } from "@/lib/login"
 
 export default function Login () {
-  const handleClickLogin = ()=>{
-    console.log("login")
+  const handleClickLogin = () => {
+    login()
   }
+
   return (
     <div className="m-auto w-64">
       <h2>Login</h2>
