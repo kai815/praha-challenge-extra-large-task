@@ -26,9 +26,23 @@ export default function Login () {
       alert('ログインしてないです。')
     }
   }
-  const handleClickGetTask = () => {
-    fetch(`${process.env.NEXT_PUBLIC_BE_API_URL}/task`)
-    .then((response) => response.json())
+  const handleClickGetTask = async () => {
+    const auth = await getAuth()
+    const token = await auth.currentUser?.getIdTokenResult()
+    const requestToken = token?.token
+
+    //今回はバックエンドの方の検証なので、tokenがなくても送信できていい
+    fetch(`${process.env.NEXT_PUBLIC_BE_API_URL}/task`,{
+      method: 'GET',
+      headers: {
+        'mode':'cors',
+        'Authorization': `Bearer ${requestToken}}`,
+        'Content-Type': 'application/json',
+      }
+    })
+    .then((response) => {
+      return response.json()
+    })
     .then((data) => {
       console.log({data})
       setTaks(data.tasks)

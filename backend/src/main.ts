@@ -17,10 +17,8 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, config)
     SwaggerModule.setup('openapi', app, document)
   }
-  app.enableCors({
-    origin: '*', //TODOとりあえず全部許可にしちゃう(デプロイしないので)
-    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
-  })
+  //TODO 中身どうなっているか後でチェックする
+  app.enableCors()
 
   await app.listen(Number(process.env.PORT) || 3001)
 }
