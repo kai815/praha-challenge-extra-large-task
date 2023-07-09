@@ -36,7 +36,7 @@ export default function Login () {
       method: 'GET',
       headers: {
         'mode':'cors',
-        'Authorization': `Bearer ${requestToken}}`,
+        'Authorization': `Bearer ${requestToken}`,
         'Content-Type': 'application/json',
       }
     })

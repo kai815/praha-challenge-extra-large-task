@@ -22,10 +22,15 @@ import { DeleteTaskUseCase } from 'src/app/usecase/task/delete-task-usecase'
 import { UserTaskRepository } from 'src/infra/db/repository/user-task-repository'
 import { UserTaskFactory } from 'src/domain/factory/user-task.factory'
 import { UsersQS } from 'src/infra/db/query-service/users-qs'
+import admin from 'firebase-admin'
+import * as serviceAccount from '../../../firebase-account.json'
 
 type Headers = {
   authorization: string
 }
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+})
 @Controller({
   path: '/task',
 })
@@ -37,6 +42,8 @@ export class TaskController {
     const authorizationHeader = headers.authorization
     const token = authorizationHeader.split(' ')[1]
     console.log({ token })
+    const decodedToken = await admin.auth().verifyIdToken(token as string)
+    console.log({ decodedToken })
     const prisma = new PrismaClient()
     const qs = new TaskQS(prisma)
     const usecase = new GetTaskUseCase(qs)
