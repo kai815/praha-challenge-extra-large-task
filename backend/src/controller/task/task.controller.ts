@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Param, Delete } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Param,
+  Delete,
+  Headers,
+} from '@nestjs/common'
 import { ApiResponse } from '@nestjs/swagger'
 import { PrismaClient } from '@prisma/client'
 import { GetTaskResponse } from './response/get-task-response'
@@ -15,6 +23,9 @@ import { UserTaskRepository } from 'src/infra/db/repository/user-task-repository
 import { UserTaskFactory } from 'src/domain/factory/user-task.factory'
 import { UsersQS } from 'src/infra/db/query-service/users-qs'
 
+type Headers = {
+  authorization: string
+}
 @Controller({
   path: '/task',
 })
@@ -22,7 +33,10 @@ export class TaskController {
   // memo: @ApiResponseを定義しておかないとSwaggerに出力されない
   @Get()
   @ApiResponse({ status: 200, type: GetTaskResponse })
-  async getTasks(): Promise<GetTaskResponse> {
+  async getTasks(@Headers() headers: Headers): Promise<GetTaskResponse> {
+    const authorizationHeader = headers.authorization
+    const token = authorizationHeader.split(' ')[1]
+    console.log({ token })
     const prisma = new PrismaClient()
     const qs = new TaskQS(prisma)
     const usecase = new GetTaskUseCase(qs)
