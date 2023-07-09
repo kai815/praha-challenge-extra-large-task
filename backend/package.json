@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "engines": {
-    "node": "18.x.x"
+    "node": "16.x.x"
   },
   "scripts": {
     "prebuild": "rimraf dist",
@@ -25,8 +25,8 @@
     "migrate:prd": "prisma migrate deploy --preview-feature",
     "test:unit": "dotenv -e .test.env -- jest",
     "test:integration": "yarn migrate:test && dotenv -e .test.env -- jest -c ./jest.integration.config.js --runInBand",
-    "studio:dev":"dotenv -e .local.env -- prisma studio",
-    "seed":"npx prisma db seed"
+    "studio:dev": "dotenv -e .local.env -- prisma studio",
+    "seed": "npx prisma db seed"
   },
   "dependencies": {
     "@nestjs/common": "^7.5.1",
@@ -38,6 +38,7 @@
     "class-validator": "^0.13.1",
     "csv": "^5.3.2",
     "dotenv": "^8.2.0",
+    "firebase-admin": "^11.9.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.3",
@@ -72,7 +73,7 @@
   },
   "resolutions": {
     "colors": "1.4.0",
-    "faker":"5.5.3"
+    "faker": "5.5.3"
   },
   "prisma": {
     "seed": "dotenv -e .local.env ts-node prisma/seed/index.ts"
