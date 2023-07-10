@@ -16,6 +16,7 @@ export class AuthRepository implements IAuthRepository {
       }
       return false
     } catch (err) {
+      //TODO雑だけど一旦これで
       return false
     }
   }
