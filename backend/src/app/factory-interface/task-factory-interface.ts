@@ -1,4 +1,4 @@
-import { Task } from 'src/domain/entity/Task'
+import { Task } from 'src/domain/entity/task'
 
 //TODO idがなかったらtitleなどは必須という型にできるならしたい
 export type TaskParams = {

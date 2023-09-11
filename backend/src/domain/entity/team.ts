@@ -211,6 +211,12 @@ export class Team {
       .members.filter((member) => member.getAllProperties().userId !== userId)
     return otherMembers
   }
+  public getOutingPairs(pairIds: string[]) {
+    const outingPairs = this.pairs.filter(
+      (pair) => !pairIds.includes(pair.getAllProperties().id),
+    )
+    return outingPairs
+  }
 }
 
 export class Pair {

@@ -10,8 +10,9 @@ export class SomeDataQS implements ISomeDataQS {
     this.prismaClient = prismaClient
   }
 
+  // dockerでprismaのエラーが出るので、APIの動作確認としてprisma使わない形を試す
   public async getAll(): Promise<SomeDataDTO[]> {
-    const allSomeDatas = await this.prismaClient.someData.findMany()
+    const allSomeDatas = [{ id: '1', required: true, number: 1 }]
     return allSomeDatas.map(
       (someDataDM) =>
         new SomeDataDTO({

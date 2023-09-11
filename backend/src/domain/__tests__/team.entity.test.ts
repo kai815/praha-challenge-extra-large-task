@@ -260,30 +260,24 @@ describe('task.entity.test', () => {
       expect(updatedPair1?.getAllProperties().membersCount).toEqual(2)
     })
 
-    //TODOあとで直す
-    // it('[正常系]5名チームの2名のペアに所属するユーザーが減る。元々5名のチームが4名になっているpair1の3名の1人がpair2になっている', () => {
-    //   const {
-    //     team,
-    //     member1Pair1,
-    //     member2Pair2,
-    //   } = generateTeamHavingMember5Pair2()
-    //   console.log({ team })
-    //   console.log(team.getAllProperties().pairs)
-    //   console.log({ member1Pair1 })
-    //   console.log({ member2Pair2 })
-    //   team.decreaseTeamMember(member2Pair2.getAllProperties().userId)
-    //   expect(team.getTeamMemberCount()).toEqual(4)
-    //   const updatedPair1 = team.getPairByUserId(
-    //     member1Pair1.getAllProperties().userId,
-    //   )
-    //   console.log({ updatedPair1 })
-    //   const updatedPair2 = team.getPairByUserId(
-    //     member1Pair1.getAllProperties().userId,
-    //   )
-    //   console.log({ updatedPair2 })
-    //   expect(updatedPair1?.getAllProperties().membersCount).toEqual(2)
-    //   expect(updatedPair2?.getAllProperties().membersCount).toEqual(2)
-    // })
+    //TODOここのテストが落ちてるので修正
+    it('[正常系]5名チームの2名のペアに所属するユーザーが減る。元々5名のチームが4名になっているpair1の3名の1人がpair2になっている', () => {
+      const {
+        team,
+        member1Pair1,
+        member2Pair2,
+      } = generateTeamHavingMember5Pair2()
+      team.decreaseTeamMember(member2Pair2.getAllProperties().userId)
+      expect(team.getTeamMemberCount()).toEqual(4)
+      const updatedPair1 = team.getPairByUserId(
+        member1Pair1.getAllProperties().userId,
+      )
+      const updatedPair2 = team.getPairByUserId(
+        member1Pair1.getAllProperties().userId,
+      )
+      expect(updatedPair1?.getAllProperties().membersCount).toEqual(2)
+      expect(updatedPair2?.getAllProperties().membersCount).toEqual(2)
+    })
   })
 
   describe('[team]getPairByMemberId', () => {
@@ -292,6 +286,14 @@ describe('task.entity.test', () => {
       expect(
         team.getMemberByUserId(member1Pair1.getAllProperties().userId),
       ).toEqual(member1Pair1)
+    })
+  })
+  describe('[team]getOutingPairs', () => {
+    it('[正常系]pairIds以外のペアを取得できる', () => {
+      const { team, pair1, pair2 } = generateTeamHavingMember4Pair2()
+      expect(team.getOutingPairs([pair1.getAllProperties().id])).toEqual([
+        pair2,
+      ])
     })
   })
 
