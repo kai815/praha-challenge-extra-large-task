@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Param, Delete } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Param,
+  Delete,
+  Headers,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { ApiResponse } from '@nestjs/swagger'
 import { PrismaClient } from '@prisma/client'
 import { GetTaskResponse } from './response/get-task-response'
@@ -14,7 +23,13 @@ import { DeleteTaskUseCase } from 'src/app/usecase/task/delete-task-usecase'
 import { UserTaskRepository } from 'src/infra/db/repository/user-task-repository'
 import { UserTaskFactory } from 'src/domain/factory/user-task.factory'
 import { UsersQS } from 'src/infra/db/query-service/users-qs'
+import admin from 'firebase-admin'
+import * as serviceAccount from '../../../firebase-account.json'
+import { AuthRepository } from 'src/infra/db/repository/auth-repository'
 
+type Headers = {
+  authorization: string
+}
 @Controller({
   path: '/task',
 })
@@ -22,12 +37,21 @@ export class TaskController {
   // memo: @ApiResponseを定義しておかないとSwaggerに出力されない
   @Get()
   @ApiResponse({ status: 200, type: GetTaskResponse })
-  async getTasks(): Promise<GetTaskResponse> {
+  async getTasks(@Headers() headers: Headers): Promise<GetTaskResponse> {
+    const authorizationHeader = headers.authorization
+    const token = authorizationHeader.split(' ')[1]
+    if (!token || token.length <= 0) {
+      throw new UnauthorizedException('Authentication failed')
+    }
     const prisma = new PrismaClient()
     const qs = new TaskQS(prisma)
-    const usecase = new GetTaskUseCase(qs)
-    const result = await usecase.do()
-    const response = new GetTaskResponse({ tasks: result })
+    const ar = new AuthRepository()
+    const usecase = new GetTaskUseCase(qs, ar)
+    const result = await usecase.do(token as string)
+    if (!result.auth) {
+      throw new UnauthorizedException('Authentication failed')
+    }
+    const response = new GetTaskResponse({ tasks: result.data })
     return response
   }
   @Post()

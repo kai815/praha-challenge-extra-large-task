@@ -37,3 +37,5 @@ lerna-debug.log*
 # version
 .envrc
 .nvmrc
+
+firebase-account.json
