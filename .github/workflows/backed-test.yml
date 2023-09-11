@@ -1,0 +1,51 @@
+name: backend-test
+on:
+  pull_request:
+  #backendに変更があった時のみ動かすとしたいが今回はそれだと今回は.githubの変更なので、一旦コメントアウトしておく
+  #push:
+    #paths:
+      #- 'backend/**'
+defaults:
+  run:
+    #backendで動かす
+    working-directory: backend
+
+jobs:
+  unit_test:
+    name: Unit Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - run: yarn
+      - run: yarn test:unit
+  integration_test:
+    name: Integration Test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: prisma2020
+          POSTGRES_DB: prisma
+          POSTGRES_INITDB_ARGS: --encoding=UTF-8
+          TZ: Asia/Tokyo
+        ports:
+          - 5402:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - run: yarn
+      - run: yarn test:integration
