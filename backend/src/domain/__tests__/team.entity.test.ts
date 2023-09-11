@@ -259,6 +259,7 @@ describe('task.entity.test', () => {
       )
       expect(updatedPair1?.getAllProperties().membersCount).toEqual(2)
     })
+    //TODOここのテストが落ちてるので修正
     it('[正常系]5名チームの2名のペアに所属するユーザーが減る。元々5名のチームが4名になっているpair1の3名の1人がpair2になっている', () => {
       const {
         team,
@@ -284,6 +285,14 @@ describe('task.entity.test', () => {
       expect(
         team.getMemberByUserId(member1Pair1.getAllProperties().userId),
       ).toEqual(member1Pair1)
+    })
+  })
+  describe('[team]getOutingPairs', () => {
+    it('[正常系]pairIds以外のペアを取得できる', () => {
+      const { team, pair1, pair2 } = generateTeamHavingMember4Pair2()
+      expect(team.getOutingPairs([pair1.getAllProperties().id])).toEqual([
+        pair2,
+      ])
     })
   })
 

@@ -2,6 +2,7 @@ import { Team, Pair, Member } from 'src/domain/entity/team'
 
 export interface ITeamRepository {
   save(team: Team): Promise<Team>
+  findById(id: string): Promise<Team>
   getLastTeamName(): Promise<string | null>
   getMinimumMemberTeam(): Promise<Team | null>
   getAllTeam(): Promise<Team[]>
